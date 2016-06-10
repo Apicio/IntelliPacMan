@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
 import pacman.controllers.Controller;
+import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
 import pacman.controllers.KeyBoardInput;
 import pacman.controllers.examples.AggressiveGhosts;
@@ -61,9 +62,10 @@ public class Executor
 		///*
 		//run the game in asynchronous mode.
 		boolean visual=true;
-		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
+//		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
 //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()),new AggressiveGhosts(),visual);	
+		exec.runGameTimed(new StarterPacMan(),new HumanAggressiveGhosts(new KeyBoardInput()),visual);	
 		//*/
 		
 		/*
