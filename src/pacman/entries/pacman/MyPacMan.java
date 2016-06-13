@@ -21,7 +21,6 @@ public class MyPacMan extends Controller<MOVE>
 		int current = game.getPacmanCurrentNodeIndex();
 		int move = current;
 		int[] moves = game.getNeighbouringNodes(current);
-
 		int max_distance = Integer.MIN_VALUE;
 		System.out.println(moves.length);
 		

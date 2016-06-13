@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
+
+import DecisionTree.DecisionTree;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
@@ -24,6 +26,7 @@ import pacman.controllers.examples.RandomNonRevPacMan;
 import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
+import pacman.entries.pacman.Ambush;
 import pacman.entries.pacman.FMyPacMan;
 import pacman.entries.pacman.MyPacMan;
 import pacman.game.Game;
@@ -68,7 +71,7 @@ public class Executor
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
 //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()),new AggressiveGhosts(),visual);	
-		exec.runGameTimed(new FMyPacMan(),new StarterGhosts(),visual);	
+		exec.runGameTimed(new DecisionTree(),new AggressiveGhosts(),visual);	
 		//*/
 		
 		/*
