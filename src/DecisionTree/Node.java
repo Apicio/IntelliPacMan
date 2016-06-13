@@ -26,6 +26,19 @@ public class Node {
 	private MOVE move;
 	private boolean visited;
 	private int depth;
+	private int a = Integer.MIN_VALUE;
+	private int b = Integer.MAX_VALUE;
+	private int utility;
+	public int getUtility() {
+		return utility;
+	}
+
+	public void setUtility(int utility) {
+		this.utility = utility;
+	}
+	private boolean isMax;
+	private double probability;
+	
 
 	public Node() {
 		this(MOVE.NEUTRAL, null);
@@ -36,12 +49,23 @@ public class Node {
 		this.predecessor = predecessor;
 	}
 	
+	public Node(MOVE move, Node predecessor, boolean isMax) {
+		this.move = move;
+		this.predecessor = predecessor;
+		this.isMax = isMax;
+		this.neighbors = new ArrayList<Node>();
+	}
+	
 	public ArrayList<Node> getNeighbors() {
 		return neighbors;
 	}
 
 	public void setNeighbors(ArrayList<Node> neighbors) {
 		this.neighbors = neighbors;
+	}
+	
+	public void addNeighbor(Node node){
+		this.neighbors.add(node);
 	}
 
 	public Node getPredecessor() {
@@ -82,5 +106,31 @@ public class Node {
 
 	public void setDepth(int depth) {
 		this.depth = depth;
+	}
+	public int getA(){
+		return a;
+	}
+	public int getB(){
+		return b;
+	}
+	public void setA(int v){
+		a = v;
+	}
+	public void setB(int v){
+		b = v;
+	}
+
+	public boolean isMax() {
+		return isMax;
+	}
+
+	public void setMax(boolean isMax) {
+		this.isMax = isMax;
+	}
+	public double getProbability() {
+		return probability;
+	}
+	public void setProbability(double probability) {
+		this.probability = probability;
 	}
 }

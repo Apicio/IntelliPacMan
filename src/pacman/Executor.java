@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
 
+import AbPruning.MinMaxPacman;
 import DecisionTree.DecisionTree;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
@@ -52,26 +53,26 @@ public class Executor
 	{
 		Executor exec=new Executor();
 
-		/*
-		//run multiple games in batch mode - good for testing.
-		int numTrials=10;
-		exec.runExperiment(new RandomPacMan(),new RandomGhosts(),numTrials);
-		 */
 		
-		/*
+		//run multiple games in batch mode - good for testing.
+	int numTrials=10;
+		exec.runExperiment(new MinMaxPacman(new StarterGhosts()),new StarterGhosts(),numTrials);
+	 
+		
+		
 		//run a game in synchronous mode: game waits until controllers respond.
-		int delay=5;
+/*		int delay=10;
 		boolean visual=true;
-		exec.runGame(new RandomPacMan(),new RandomGhosts(),visual,delay);
-  		 */
+		exec.runGame(new DecisionTree(),new StarterGhosts(),visual,delay);
+ */	
 		
 		///*
 		//run the game in asynchronous mode.
-		boolean visual=true;
+//		boolean visual=true;
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
 //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()),new AggressiveGhosts(),visual);	
-		exec.runGameTimed(new DecisionTree(),new AggressiveGhosts(),visual);	
+//		exec.runGameTimed(new DecisionTree(),new AggressiveGhosts(),visual);	
 		//*/
 		
 		/*
