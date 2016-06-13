@@ -174,11 +174,14 @@ public class Ambush extends Controller<MOVE>
 			if(game.getDistance(pacManIndex, ghostIndex, DM.PATH) <= NG_THR4)
 				if(game.getDistance(pacManIndex, edibleGhost, DM.PATH) <= NEG_THR4)
 					return game.getNextMoveTowardsTarget(pacManIndex,edibleGhost,DM.PATH);
-
 		// Rule 5
-
+		if(game.getDistance(pacManIndex, ghostIndex, DM.PATH) <= NG_THR5)
+			return game.getNextMoveTowardsTarget(pacManIndex,pillIndex,DM.PATH);
 		// Rule 6
-
+		if(edibleGhost != NOEDIBLEGHOST)
+			if(game.getDistance(pacManIndex, ghostIndex, DM.PATH) >= NG_THR6)
+				if(game.getDistance(pacManIndex, edibleGhost, DM.PATH) <= NEG_THR6)
+					return game.getNextMoveTowardsTarget(pacManIndex,edibleGhost,DM.MANHATTAN);				
 		// Rule 7
 		if(game.getDistance(pacManIndex, ghostIndex, DM.PATH) >= NG_THR7)
 			return game.getNextMoveTowardsTarget(pacManIndex,pillIndex,DM.MANHATTAN);
