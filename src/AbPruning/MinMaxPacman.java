@@ -2,6 +2,7 @@ package AbPruning;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Random;
 
 import DecisionTree.Node;
 import DecisionTree.Tree;
@@ -22,6 +23,9 @@ public class MinMaxPacman extends Controller<MOVE>
 	private MOVE myMove=MOVE.NEUTRAL;
 	static private int DEPTH = 5;
 	Controller<EnumMap<GHOST,MOVE>> ghostController;
+	private Random rnd=new Random();
+	private MOVE[] allMoves=MOVE.values();
+	
 	
 	public MinMaxPacman(Controller<EnumMap<GHOST,MOVE>> ghostController){
 		this.ghostController = ghostController;
@@ -32,7 +36,8 @@ public class MinMaxPacman extends Controller<MOVE>
 		abTree tree = new abTree(game);
 		mmComputeTree(tree.getHeadNode(),true);
 		minimax(tree.getHeadNode());
-		return tree.getHeadNode().getMove();
+		//return tree.getHeadNode().getMove();
+		return allMoves[rnd.nextInt(allMoves.length)];
 	}
 
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Random;
+
+import pacman.Evaluation;
 import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;

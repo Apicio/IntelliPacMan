@@ -28,9 +28,11 @@ import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.pacman.Ambush;
+import pacman.entries.pacman.ComputeDistance;
 import pacman.entries.pacman.FMyPacMan;
 import pacman.entries.pacman.MyPacMan;
 import pacman.entries.pacman.MyRandomPacMan;
+import pacman.entries.pacman.MyRandomPacMan2;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -64,7 +66,8 @@ public class Executor
 		//run a game in synchronous mode: game waits until controllers respond.
 		int delay=10;
 		boolean visual=true;
-		exec.runGame(new MyRandomPacMan(new RandomGhosts()),new RandomGhosts(),visual,delay);
+		
+		exec.runGame(new MinMaxPacman(new StarterGhosts()),new StarterGhosts(),visual,delay);
  
 		
 		///*
