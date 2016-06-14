@@ -30,6 +30,7 @@ import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.pacman.Ambush;
 import pacman.entries.pacman.FMyPacMan;
 import pacman.entries.pacman.MyPacMan;
+import pacman.entries.pacman.MyRandomPacMan;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -55,16 +56,16 @@ public class Executor
 
 		
 		//run multiple games in batch mode - good for testing.
-	int numTrials=10;
+/*	int numTrials=10;
 		exec.runExperiment(new MinMaxPacman(new StarterGhosts()),new StarterGhosts(),numTrials);
 	 
-		
+*/		
 		
 		//run a game in synchronous mode: game waits until controllers respond.
-/*		int delay=10;
+		int delay=10;
 		boolean visual=true;
-		exec.runGame(new DecisionTree(),new StarterGhosts(),visual,delay);
- */	
+		exec.runGame(new MyRandomPacMan(new RandomNonRevPacMan(), new RandomGhosts()),new RandomGhosts(),visual,delay);
+ 
 		
 		///*
 		//run the game in asynchronous mode.
