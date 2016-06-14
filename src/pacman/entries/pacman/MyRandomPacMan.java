@@ -3,8 +3,10 @@ package pacman.entries.pacman;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Random;
 
 import pacman.Evaluation;
+import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -18,94 +20,151 @@ import pacman.game.Game;
  */
 public class MyRandomPacMan extends Controller<MOVE>
 {
-	private MOVE myMove=MOVE.NEUTRAL;
-	private Controller<MOVE> controllerPacman;
 	private Controller<EnumMap<GHOST,MOVE>> controllerGhosts; 
-	private int[] iIndex;
+	private ArrayList<Integer> iIndex = new ArrayList<Integer>();
 	private boolean firstTime = true;
+	private static int SIZE = 50;
+	private ArrayList<Integer> index;
+	private Container[] bestMoves;
 
-	public MyRandomPacMan (Controller<MOVE> pacman, Controller<EnumMap<GHOST,MOVE>> ghosts){
+	public MyRandomPacMan (Controller<EnumMap<GHOST,MOVE>> ghosts){
 		this.controllerGhosts = ghosts;
-		this.controllerPacman = pacman;
 	}
 
+	public void computeMOVE(Game game, long timeDue, ArrayList<Integer> currActive, ArrayList<Integer> used, int modality){
+		Random generator = new Random(System.currentTimeMillis());
+		switch(modality){
+		case 0:
+			index = new ArrayList<Integer>();
+			if(currActive.size()>SIZE){
+				for(int i = 0; i<SIZE; i++){
+					int randomIndex = generator.nextInt(currActive.size());
+					index.add(currActive.get(randomIndex));
+				}
+			}else
+				index.addAll(currActive);
+			break;
+		case 1:
+			used.addAll(index);
+			break;
+		case 2:
+			index = new ArrayList<Integer>();
+			index.addAll(currActive);
+			index.removeAll(used);
+			break;
+		case 3:			
+			used.addAll(index);
+			break;
+		case 4:
+			index = new ArrayList<Integer>();
+			ArrayList<Integer> getFrom = new ArrayList<Integer>(iIndex);
+			getFrom.removeAll(used);
+			if(getFrom.size() == 0) return;
+			for(int i = 0; i<SIZE; i++){
+				int randomIndex = generator.nextInt(getFrom.size());
+				index.add(getFrom.get(randomIndex));
+			}
+			break;
+		case 5:
+			used.addAll(index);
+			break;
+		case 6:
+		case 7:
+			index = new ArrayList<Integer>(iIndex);
+			index.removeAll(used);
+			break;
+		default:
+				return;
+		}
 
-	public MOVE getMove(Game game, long timeDue) 
-	{
-		int[] index = game.getActivePillsIndices();
-		if(firstTime){
-			iIndex = game.getActivePillsIndices();;
-			firstTime = false;
-		}	
-				
-		
 		ArrayList<Container> moves = new ArrayList<Container>();
-		
-		for(int i=0; i<index.length; i++){
+
+		for(int i=0; i<index.size(); i++){
 			int k = 0;
-			int gotoPill = index[i];
+			int gotoPill = index.get(i);
 			Game gameState = game.copy();
 			Container c = new Container();
 			while(gameState.getPacmanCurrentNodeIndex() != gotoPill){
 				int currPac = gameState.getPacmanCurrentNodeIndex();	
 				MOVE last = gameState.getPacmanLastMoveMade() != null? gameState.getPacmanLastMoveMade() : MOVE.NEUTRAL;
-				//MOVE path = gameState.getNextMoveTowardsTarget(currPac, gotoPill, DM.PATH);
-				MOVE path = gameState.getApproximateNextMoveTowardsTarget(currPac, gotoPill, last, DM.PATH);
+				MOVE path = null;
+				switch(modality){
+				case 0:
+				case 2:
+				case 4:
+				case 6:
+					path = gameState.getApproximateNextMoveTowardsTarget(currPac, gotoPill, last, DM.PATH);
+					break;
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+					path = gameState.getNextMoveTowardsTarget(currPac, gotoPill, DM.PATH);
+					break;		
+				}
 				gameState.advanceGame(path, controllerGhosts.getMove());
 				if(k == 0)
 					c.next = path;	
 				k++;
 			}
-			c.heuristic = Evaluation.evaluateGameState(gameState);
+			c.heuristic = Evaluation_.evaluateGameState(gameState);
+			c.game = gameState;
 			moves.add(c);
 		}
-		
-		int heuristic = Integer.MIN_VALUE;
-		for(Container move : moves){
-			if(move.heuristic > heuristic){
-				myMove = move.next;
-				heuristic = move.heuristic;
-			}
+
+		if(moves.size() == 0){
+			bestMoves[modality] = new Container();
+			return;
 		}
-		
-		int soglia = 30000000;
-		if(heuristic < soglia){
-			System.out.println("all");
-			moves = new ArrayList<Container>();		
-			for(int i=0; i<iIndex.length; i++){
-				int k = 0;
-				int gotoPill = iIndex[i];
-				Game gameState = game.copy();
-				Container c = new Container();
-				while(gameState.getPacmanCurrentNodeIndex() != gotoPill){
-					int currPac = gameState.getPacmanCurrentNodeIndex();	
-					MOVE last = gameState.getPacmanLastMoveMade() != null? gameState.getPacmanLastMoveMade() : MOVE.NEUTRAL;
-					MOVE path = gameState.getNextMoveTowardsTarget(currPac, gotoPill, DM.PATH);
-					//MOVE path = gameState.getApproximateNextMoveTowardsTarget(currPac, gotoPill, last, DM.PATH);
-					gameState.advanceGame(path, controllerGhosts.getMove());
-					if(k == 0)
-						c.next = path;	
-					k++;
-				}
-				c.heuristic = Evaluation.evaluateGameState(gameState);
-				moves.add(c);
-			}
 			
-			heuristic = Integer.MIN_VALUE;
-			for(Container move : moves){
-				if(move.heuristic > heuristic){
-					myMove = move.next;
-					heuristic = move.heuristic;
-				}
-			}
+		for(Container move : moves)
+			if(move.heuristic > bestMoves[modality].heuristic)
+				bestMoves[modality] = move;
+
+		if(bestMoves[modality].game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && modality<8)
+			computeMOVE(game, timeDue, currActive, used, modality+1);
+	}
+
+
+	public MOVE getMove(Game game, long timeDue) 
+	{
+		if(firstTime){
+			int[] index = game.getActivePillsIndices();
+			for(int i = 0; i<index.length; i++)
+				iIndex.add(index[i]);
+			firstTime = false;
 		}
 		
+		bestMoves = new Container[8];
+		bestMoves[0] = new Container();
+		bestMoves[1] = new Container();
+		bestMoves[2] = new Container();
+		bestMoves[3] = new Container();
+		bestMoves[4] = new Container();
+		bestMoves[5] = new Container();
+		bestMoves[6] = new Container();
+		bestMoves[7] = new Container();
 		
-		return myMove;
+
+		ArrayList<Integer> activeIndex = new ArrayList<Integer>();
+		int[] cindex = game.getActivePillsIndices();
+		for(int i = 0; i<cindex.length; i++)
+			activeIndex.add(cindex[i]);
+
+		computeMOVE(game, timeDue, activeIndex, new ArrayList<Integer>(), 0);
+		
+		Container toReturn = new Container();
+		for(Container move : bestMoves){
+			if(move.heuristic > toReturn.heuristic)
+				toReturn = move;
+		}
+		
+		return toReturn.next;
 	}
-	
+
 	private class Container{
-		public MOVE next;
-		public Integer heuristic;
+		public MOVE next = MOVE.NEUTRAL;
+		public Integer heuristic = Integer.MIN_VALUE;
+		public Game game;
 	}
 }

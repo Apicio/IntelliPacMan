@@ -12,6 +12,11 @@ import pacman.game.Game;
 public class Evaluation_ {
 
 	public  static final int MIN_GHOST_DIST = 10;
+	public static int evaluateGameState(Game game) {
+		Node node = new Node();
+		node.setGameState(game);
+		return evaluateGameState(node, false); 
+	}
 
 	public static int evaluateGameState(Node node, boolean IsCollided) {
 		Game g = node.getGameState();
