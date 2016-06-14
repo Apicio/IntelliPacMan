@@ -1,11 +1,10 @@
 package pacman.entries.pacman;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Random;
 
-import pacman.Evaluation;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Random;
 import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
@@ -31,18 +30,13 @@ public class MyRandomPacMan extends Controller<MOVE>
 		this.controllerGhosts = ghosts;
 	}
 
-	public void computeMOVE(Game game, long timeDue, ArrayList<Integer> currActive, ArrayList<Integer> used, int modality){
+	public void computeMOVE(Game game, long timeDue, ArrayList<Integer> currActive, HashSet<Integer> used, int modality){
 		Random generator = new Random(System.currentTimeMillis());
 		switch(modality){
 		case 0:
 			index = new ArrayList<Integer>();
-			if(currActive.size()>SIZE){
-				for(int i = 0; i<SIZE; i++){
-					int randomIndex = generator.nextInt(currActive.size());
-					index.add(currActive.get(randomIndex));
-				}
-			}else
-				index.addAll(currActive);
+			for(int i = 0; i<SIZE; i++)
+				index.add(currActive.get(generator.nextInt(currActive.size())));
 			break;
 		case 1:
 			used.addAll(index);
@@ -59,11 +53,8 @@ public class MyRandomPacMan extends Controller<MOVE>
 			index = new ArrayList<Integer>();
 			ArrayList<Integer> getFrom = new ArrayList<Integer>(iIndex);
 			getFrom.removeAll(used);
-			if(getFrom.size() == 0) return;
-			for(int i = 0; i<SIZE; i++){
-				int randomIndex = generator.nextInt(getFrom.size());
-				index.add(getFrom.get(randomIndex));
-			}
+			for(int i = 0; i<SIZE; i++)
+				index.add(getFrom.get(generator.nextInt(getFrom.size())));
 			break;
 		case 5:
 			used.addAll(index);
@@ -73,8 +64,12 @@ public class MyRandomPacMan extends Controller<MOVE>
 			index = new ArrayList<Integer>(iIndex);
 			index.removeAll(used);
 			break;
-		default:
-				return;
+		}
+
+		if(modality >= 6){
+			System.out.println("TOP");
+			if(used.size() + index.size() < 220)
+				System.out.println("Errore");
 		}
 
 		ArrayList<Container> moves = new ArrayList<Container>();
@@ -111,18 +106,15 @@ public class MyRandomPacMan extends Controller<MOVE>
 			c.game = gameState;
 			moves.add(c);
 		}
+		if(moves.isEmpty()) return;
 
-		if(moves.size() == 0){
-			bestMoves[modality] = new Container();
-			return;
-		}
-			
 		for(Container move : moves)
-			if(move.heuristic > bestMoves[modality].heuristic)
+			if(move.heuristic >= bestMoves[modality].heuristic)
 				bestMoves[modality] = move;
+		
 
-		if(bestMoves[modality].game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && modality<8)
-			computeMOVE(game, timeDue, currActive, used, modality+1);
+		if(bestMoves[modality].game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && modality<7)
+			computeMOVE(game, timeDue, currActive, used, modality+1);			
 	}
 
 
@@ -134,7 +126,7 @@ public class MyRandomPacMan extends Controller<MOVE>
 				iIndex.add(index[i]);
 			firstTime = false;
 		}
-		
+
 		bestMoves = new Container[8];
 		bestMoves[0] = new Container();
 		bestMoves[1] = new Container();
@@ -144,21 +136,20 @@ public class MyRandomPacMan extends Controller<MOVE>
 		bestMoves[5] = new Container();
 		bestMoves[6] = new Container();
 		bestMoves[7] = new Container();
-		
 
 		ArrayList<Integer> activeIndex = new ArrayList<Integer>();
 		int[] cindex = game.getActivePillsIndices();
 		for(int i = 0; i<cindex.length; i++)
 			activeIndex.add(cindex[i]);
 
-		computeMOVE(game, timeDue, activeIndex, new ArrayList<Integer>(), 0);
-		
+		computeMOVE(game, timeDue, activeIndex, new HashSet<Integer>(), 0);
+
 		Container toReturn = new Container();
 		for(Container move : bestMoves){
 			if(move.heuristic > toReturn.heuristic)
 				toReturn = move;
 		}
-		
+
 		return toReturn.next;
 	}
 
