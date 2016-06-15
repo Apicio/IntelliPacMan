@@ -66,7 +66,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 		if(best.game == null)
 			System.out.println("FUCK");
 
-		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining())
+		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining()&&!isAll)
 			return computeMove(game, timeDue, true);
 		else
 			return best.next;
