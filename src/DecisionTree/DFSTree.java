@@ -14,7 +14,7 @@ import pacman.game.Game;
  * fill in the getAction() method. Any additional classes you write should either
  * be placed in this package or sub-packages (e.g., game.entries.pacman.mypackage).
  */
-public class DecisionTree extends Controller<MOVE>
+public class DFSTree extends Controller<MOVE>
 {
 	static private int DEPTH = 5;
 	EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);

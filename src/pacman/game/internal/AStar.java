@@ -197,11 +197,30 @@ package pacman.game.internal;
 //	}
 //}
 
+import pacman.game.Game;
+import pacman.game.Constants.MOVE;
+
 public class AStar extends AbstractAStar{
 
 	@Override
-	public double computeCost() {
-		return 1;
+	public double computeHeuristic(Game game, int start, int target) {
+		return game.getShortestPathDistance(start, target);
+	}
+
+	@Override
+	public double computeCost(Game game, int index, int index2) {
+		return 0;
+	}
+	public MOVE getMoveTo(int target, Game game){
+		int currPac = game.getPacmanCurrentNodeIndex();
+		int [] path = computePathsAStar(currPac, target, game.getPacmanLastMoveMade(), game);
+		return game.getMoveToMakeToReachDirectNeighbour(currPac, path[1]);
+		
+	}
+
+	@Override
+	public double addictionalCost(int index, Game game) {
+		return 0;
 	}
 	
 }

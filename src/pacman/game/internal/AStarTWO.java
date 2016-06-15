@@ -1,11 +1,8 @@
 package pacman.game.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.PriorityQueue;
-
 import pacman.game.Game;
+import pacman.game.Constants.DM;
+import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
 /*
@@ -16,11 +13,39 @@ import pacman.game.Constants.MOVE;
  */
 public class AStarTWO extends AbstractAStar
 {
+	private static final int NUMJUNCTION = 10;
+	@Override
+	public double computeCost(Game game, int start, int target) {
+		return AStarUtil.computeDistanceCost(game, start, target, NUMJUNCTION);
+	}
 
 	@Override
-	public double computeCost() {
-		return 0;
+	public double computeHeuristic(Game game, int start, int target) {
+		return game.getShortestPathDistance(start, target);
 	}
 	
-	
+	public MOVE getMoveTo(int powerPillIndex, Game game){
+		int currPac = game.getPacmanCurrentNodeIndex();
+		int [] path = computePathsAStar(currPac, powerPillIndex, game.getPacmanLastMoveMade(), game);
+		return game.getMoveToMakeToReachDirectNeighbour(currPac, path[1]);
+		
+	}
+
+	@Override
+	public double addictionalCost(int index, Game game) {
+		double cost = 0;
+		if(!game.isJunction(index))
+			return cost;
+		
+		cost +=500;
+		for(GHOST g : GHOST.values())
+			if(game.getGhostCurrentNodeIndex(g) == index){
+				cost +=1000000;
+				if(game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), DM.PATH) < 100)
+					cost +=6000000;
+			}
+			System.out.println(cost);
+		return cost;
+	}
+
 }
