@@ -67,7 +67,7 @@ public class Executor
 		int delay=10;
 		boolean visual=true;
 		
-		exec.runGame(new MinMaxPacman(new StarterGhosts()),new StarterGhosts(),visual,delay);
+		exec.runGame(new MinMaxPacman(new AggressiveGhosts()),new AggressiveGhosts(),visual,delay);
  
 		
 		///*

@@ -7,6 +7,7 @@ import java.util.Random;
 import DecisionTree.Node;
 import DecisionTree.Tree;
 import pacman.Evaluation;
+import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.game.Constants.GHOST;
@@ -21,7 +22,7 @@ import pacman.game.Game;
 public class MinMaxPacman extends Controller<MOVE>
 {
 	private MOVE myMove=MOVE.NEUTRAL;
-	static private int DEPTH = 5;
+	static private int DEPTH = 6;
 	Controller<EnumMap<GHOST,MOVE>> ghostController;
 	private Random rnd=new Random();
 	private MOVE[] allMoves=MOVE.values();
@@ -33,72 +34,131 @@ public class MinMaxPacman extends Controller<MOVE>
 
 	public MOVE getMove(Game game, long timeDue) 
 	{
-		abTree tree = new abTree(game);
-		mmComputeTree(tree.getHeadNode(),true);
-		minimax(tree.getHeadNode());
-		//return tree.getHeadNode().getMove();
-		return allMoves[rnd.nextInt(allMoves.length)];
+		//abTree tree = new abTree(game);
+		//mmComputeTree(tree.getHeadNode(),true);
+		State head = new State();
+		head.game = game;
+		head.depth = 0;
+		ArrayList<State> next = getNextPACMANMoves(head);
+		ArrayList<State> comp = new ArrayList<State>();
+		for(State child : next){
+			comp.add(minimax(child, false));
+		}
+		Integer alpha = Integer.MIN_VALUE;
+		for(State find : comp){
+			if(alpha<find.beta){
+				alpha = find.beta;
+				myMove = find.pacMove;
+			}
+		}
+		return myMove;
 	}
 
-
-	private void minimax(Node headNode) {
-		ArrayList<Node> neighbors = headNode.getNeighbors();
-		if(neighbors == null || neighbors.size() == 0){
-			return;
+//	private State minimax(State node, boolean isMax) {
+//		if(node.depth == DEPTH){
+//			node.utility = Evaluation_.evaluateGameState(node.game);
+//			System.out.println(isMax);
+//			return node;
+//		}
+//		
+//		if(isMax){
+//			node.utility = Integer.MIN_VALUE;
+//			ArrayList<State> next = getNextPACMANMoves(node);
+//			for(State child : next){
+//				System.out.println(child.pacMove);
+//				node.utility = Math.max(node.utility, minimax(child,false).utility);
+//				if(node.utility >= node.beta)
+//					return node;
+//				node.alpha = Math.max(node.alpha, node.utility);
+//			}
+//			return node;
+//		}else{
+//			node.utility = Integer.MAX_VALUE;
+//			ArrayList<State> next = getNextGHOSTMoves(node);
+//			for(State child : next){
+//				node.utility = Math.min(node.utility, minimax(child,true).utility);
+//				if(node.utility <= node.alpha)
+//					return node;
+//				node.beta = Math.min(node.beta, node.utility);
+//			}
+//			return node;	
+//		}
+//	}
+	private State minimax(State node, boolean isMax) {
+		if(node.depth == DEPTH){
+			node.beta = Evaluation_.evaluateGameState(node.game);
+			return node;
 		}
-		// TODO
 		
-			
-		
-	}
-
-	private void mmComputeTree(Node node, boolean isMax) {
-		Game gameState = node.getGameState().copy();
-		ArrayList<Container> nextStates = new ArrayList<Container>();
-		if(isMax)
-			nextStates = getNextPACMANMoves(gameState);
-		else
-			nextStates = getNextGHOSTMoves(gameState);
-
-		for(Container g : nextStates){
-			Node child = new Node(g.pacMove, node, isMax);
-			child.setDepth(node.getDepth()+1);
-			child.setGameState(g.game);
-			child.setProbability(g.probability);
-			node.addNeighbor(child);
-		}
-
-		if(node.getDepth() < DEPTH)
-			for(Node n : node.getNeighbors())
-				mmComputeTree(n, !isMax);
-		else{
-			node.setUtility(Evaluation.evaluateGameState(node.getGameState()));
+		if(isMax){
+			ArrayList<State> next = getNextPACMANMoves(node);
+			for(State child : next){
+				node.alpha = Math.max(node.alpha, minimax(child,false).beta);
+				if(node.beta <= node.alpha)
+					return node;
+			}
+			return node;
+		}else{
+			ArrayList<State> next = getNextGHOSTMoves(node);
+			for(State child : next){
+				node.beta = Math.min(node.beta, minimax(child,true).alpha);
+				if(node.beta <= node.alpha)
+					return node;
+			}
+			return node;	
 		}
 	}
+//	private void mmComputeTree(Node node, boolean isMax) {
+//		Game gameState = node.getGameState().copy();
+//		ArrayList<State> nextStates = new ArrayList<State>();
+//		if(isMax)
+//			nextStates = getNextPACMANMoves(gameState);
+//		else
+//			nextStates = getNextGHOSTMoves(gameState);
+//
+//		for(State g : nextStates){
+//			Node child = new Node(g.pacMove, node, isMax);
+//			child.setDepth(node.getDepth()+1);
+//			child.setGameState(g.game);
+//			child.setProbability(g.probability);
+//			node.addNeighbor(child);
+//		}
+//
+//		if(node.getDepth() < DEPTH)
+//			for(Node n : node.getNeighbors())
+//				mmComputeTree(n, !isMax);
+//		else{
+//			node.setUtility(Evaluation.evaluateGameState(node.getGameState()));
+//		}
+//	}
 
 
 
-	private ArrayList<Container> getNextGHOSTMoves(Game gameState) {
-		ArrayList<Container> toReturn = new ArrayList<Container>();
+	private ArrayList<State> getNextGHOSTMoves(State gameState) {
+		ArrayList<State> toReturn = new ArrayList<State>();
 		ArrayList<MOVE[]> moves = new ArrayList<MOVE[]>();
 		for(GHOST ghost : GHOST.values()){
-			int ghostIndex = gameState.getGhostCurrentNodeIndex(ghost);
-			moves.add(gameState.getPossibleMoves(ghostIndex));
+			int ghostIndex = gameState.game.getGhostCurrentNodeIndex(ghost);
+			moves.add(gameState.game.getPossibleMoves(ghostIndex));
 		}
 		
 		for(int i = 0; i<moves.get(0).length; i++){
 			for(int j = 0; j<moves.get(1).length; j++){
 				for(int k = 0; k<moves.get(2).length; k++){
 					for(int x = 0; x<moves.get(3).length; x++){
-						Game tmpGame = gameState.copy();
-						EnumMap<GHOST, MOVE> ghostStruct = ghostController.getMove(gameState,-1);
+						Game tmpGame = gameState.game.copy();
+						EnumMap<GHOST, MOVE> ghostStruct = ghostController.getMove(gameState.game,-1);
 						ghostStruct.replace(GHOST.values()[0], moves.get(0)[i]);
 						ghostStruct.replace(GHOST.values()[1], moves.get(1)[j]);
 						ghostStruct.replace(GHOST.values()[2], moves.get(2)[k]);
 						ghostStruct.replace(GHOST.values()[3], moves.get(3)[x]);
 						tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
-						Container c = new Container();
+						State c = new State();
 						c.game = tmpGame;
+						c.alpha = gameState.alpha;
+						c.beta = gameState.beta;
+						c.depth = gameState.depth+1;
+						c.pacMove = gameState.pacMove;
 						c.probability = 1/(moves.get(0).length*moves.get(1).length*moves.get(2).length*moves.get(3).length);
 						toReturn.add(c);
 					}
@@ -109,29 +169,37 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 
-	private ArrayList<Container> getNextPACMANMoves(Game gameState) {
-		int currIndex = gameState.getPacmanCurrentNodeIndex();
-		MOVE[] moves = gameState.getPossibleMoves(currIndex);
-		ArrayList<Container> toReturn = new ArrayList<Container>();
-		EnumMap<GHOST, MOVE> ghostMove = ghostController.getMove(gameState,-1);
+	private ArrayList<State> getNextPACMANMoves(State gameState) {
+		int currIndex = gameState.game.getPacmanCurrentNodeIndex();
+		MOVE[] moves = gameState.game.getPossibleMoves(currIndex);
+		ArrayList<State> toReturn = new ArrayList<State>();
+		EnumMap<GHOST, MOVE> ghostMove = ghostController.getMove(gameState.game,-1);
 		for(MOVE move : moves){
-			Game tmpGame = gameState.copy();
+			Game tmpGame = gameState.game.copy();
 			tmpGame.advanceGame(move, ghostMove);
-			Container c = new Container();
+			State c = new State();
 			c.game = tmpGame;
-			c.pacMove = move;
+			if(gameState.depth == 0)
+				c.pacMove = move;
+			else
+				c.pacMove = gameState.pacMove;
+			c.alpha = gameState.alpha;
+			c.beta = gameState.beta;
+			c.depth = gameState.depth+1;
 			toReturn.add(c);
 		}
 		return toReturn;
 	}
 
-	boolean isValidMove(MOVE[] validMoves, MOVE move) {
-		for (MOVE validMove : validMoves) {
-			if (move == validMove) return true;
-		}
-		return false;
+	private class State{
+		public Integer depth = 0;
+		public Game game;
+		public double probability = 1;
+		public MOVE pacMove = MOVE.NEUTRAL;;
+		public Integer alpha = Integer.MIN_VALUE;
+		public Integer beta = Integer.MAX_VALUE;
 	}
-	
+/*	
 	private class Container{
 		public Game game;
 		public double probability;
@@ -141,5 +209,5 @@ public class MinMaxPacman extends Controller<MOVE>
 			this.pacMove = MOVE.NEUTRAL;
 			this.probability = 1;
 		}
-	}
+	} */
 }
