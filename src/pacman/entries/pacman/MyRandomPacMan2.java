@@ -1,17 +1,6 @@
 package pacman.entries.pacman;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
-
-import pacman.Evaluation;
 import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
@@ -63,10 +52,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 			if(move.heuristic > best.heuristic)
 				best = move;
 
-		if(best.game == null)
-			System.out.println("FUCK");
-
-		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining())
+		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && !isAll)
 			return computeMove(game, timeDue, true);
 		else
 			return best.next;
