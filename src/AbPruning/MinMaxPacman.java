@@ -19,6 +19,7 @@ import pacman.game.Game;
  * This is the class you need to modify for your entry. In particular, you need to
  * fill in the getAction() method. Any additional classes you write should either
  * be placed in this package or sub-packages (e.g., game.entries.pacman.mypackage).
+ * 
  */
 public class MinMaxPacman extends Controller<MOVE>
 {
