@@ -24,7 +24,7 @@ public class MinMaxPacman extends Controller<MOVE>
 {
 	static int k=0;
 	private MOVE myMove=MOVE.NEUTRAL;
-	static private int DEPTH = 6;
+	static private int DEPTH = 10;
 	Controller<EnumMap<GHOST,MOVE>> ghostController;
 	private Random rnd=new Random();
 	private MOVE[] allMoves=MOVE.values();
@@ -58,9 +58,7 @@ public class MinMaxPacman extends Controller<MOVE>
 			int ghostIndex = game.getGhostCurrentNodeIndex(ghost);
 			moves.add(game.getPossibleMoves(ghostIndex));
 		}		
-		if(moves.get(0).length ==0 || moves.get(1).length ==0 || moves.get(2).length ==0 || moves.get(3).length ==0 )
-			return game.getPacmanLastMoveMade().opposite();
-		else
+
 			return myMove;
 	}
 
@@ -96,7 +94,11 @@ public class MinMaxPacman extends Controller<MOVE>
 	//	}
 	private State minimax(State node, boolean isMax) {
 		if(node.depth == DEPTH){
-			node.beta = Evaluation_.evaluateGameState(node.game);
+			if(isMax)
+			    node.alpha = Evaluation_.evaluateGameState(node.game);
+			else 
+				node.beta = Evaluation_.evaluateGameState(node.game);
+
 			return node;
 		}
 
