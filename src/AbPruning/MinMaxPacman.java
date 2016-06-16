@@ -8,6 +8,7 @@ import java.util.Random;
 import DecisionTree.Node;
 import DecisionTree.Tree;
 import pacman.Evaluation;
+import pacman.EvaluationGene;
 import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.AggressiveGhosts;
@@ -65,9 +66,9 @@ public class MinMaxPacman extends Controller<MOVE>
 	private State minimax(State node, boolean isMax) {
 		if(node.depth == depth){
 			if(isMax)
-				node.alpha = Evaluation_.evaluateGameState(node.game);
+				node.alpha = EvaluationGene.evaluateGameState(node.game);
 			else 
-				node.beta = Evaluation_.evaluateGameState(node.game);
+				node.beta = EvaluationGene.evaluateGameState(node.game);
 			return node;
 		}
 

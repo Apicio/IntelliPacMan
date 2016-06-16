@@ -17,8 +17,6 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 {
 	private Controller<EnumMap<GHOST,MOVE>> controllerGhosts; 
 	private int[] iIndex;
-	private int level = -1;
-
 
 	public MyRandomPacMan2 (Controller<EnumMap<GHOST,MOVE>> ghosts){
 		this.controllerGhosts = ghosts;
@@ -62,11 +60,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 
 	public MOVE getMove(Game game, long timeDue) 
 	{
-		if(level -1 != game.getCurrentLevel()){
-			iIndex = game.getActivePillsIndices();
-			level = game.getCurrentLevel();
-		}
-
+		iIndex = game.getPillIndices();
 		return computeMove(game, timeDue,false);
 	}
 

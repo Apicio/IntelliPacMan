@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 import pacman.Evaluation;
+import pacman.EvaluationGene;
 import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -31,7 +32,7 @@ public class DFSTree extends Controller<MOVE>
 		ArrayList<Node> neighbors = node.getNeighbors();
 		if (neighbors == null || node.getGameState().gameOver() || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			//return Evaluation.evaluateGameState(node, node.getGameState().getPacmanNumberOfLivesRemaining() < life); // end of branch return heuristic
-			return Evaluation.evaluateGameState(node.getGameState()); // end of branch return heuristic
+			return EvaluationGene.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
 		int bestValue = Integer.MIN_VALUE;
 		for (Node neighbor : neighbors) {		

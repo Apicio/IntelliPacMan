@@ -11,7 +11,7 @@ import java.util.EnumMap;
 import java.util.Random;
 
 import AbPruning.MinMaxPacman;
-import DecisionTree.DecisionTree;
+import DecisionTree.DFSTree;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
@@ -29,10 +29,10 @@ import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.pacman.Ambush;
 import pacman.entries.pacman.ComputeDistance;
-import pacman.entries.pacman.FMyPacMan;
 import pacman.entries.pacman.MyPacMan;
 import pacman.entries.pacman.MyRandomPacMan;
 import pacman.entries.pacman.MyRandomPacMan2;
+import pacman.entries.pacman.MyAStar;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -56,37 +56,63 @@ public class Executor
 	{
 		Executor exec=new Executor();
 
-		
+
 		//run multiple games in batch mode - good for testing.
-/*	int numTrials=10;
-		exec.runExperiment(new MinMaxPacman(new StarterGhosts()),new StarterGhosts(),numTrials);
-	 
-*/		
-		
+//		boolean canReverse = true;
+		int numTrials=10;
+//		for(int i=2; i<220; i++){	
+//			//exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,canReverse),new AggressiveGhosts(),numTrials); 
+//			exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,!canReverse),new AggressiveGhosts(),numTrials); 
+//			System.out.println("DEEP = "+i);
+//		}
+//		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
+
+//		int numTrials=10;
+//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
+ //int numTrials=10;
+	//	exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
 		//run a game in synchronous mode: game waits until controllers respond.
 		int delay=10;
 		boolean visual=true;
-		
-		exec.runGame(new MinMaxPacman(new AggressiveGhosts()),new AggressiveGhosts(),visual,delay);
- 
-		
+        System.out.println("Trial: 1 Generations: 20 PopSize: 50");
+        CambrianExplosion boom1 = new CambrianExplosion(20, 50, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+        boom1.explode();
+//        System.out.println("Trial: 2 Generations: 5 PopSize: 20");
+//        CambrianExplosion boom2 = new CambrianExplosion(5, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom2.explode();
+//        System.out.println("Trial: 3 Generations: 10 PopSize: 10");
+//        CambrianExplosion boom3 = new CambrianExplosion(10, 10, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom3.explode();
+//        System.out.println("Trial: 4 Generations: 10 PopSize: 20");
+//        CambrianExplosion boom4 = new CambrianExplosion(10, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom4.explode();
+//        System.out.println("Trial: 5 Generations: 20 PopSize: 20");
+//        CambrianExplosion boom5 = new CambrianExplosion(20, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom5.explode();
+//        System.out.println("Trial: 6 Generations: 100 PopSize: 20");
+//        CambrianExplosion boom6 = new CambrianExplosion(100, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom6.explode();
+//
+//		//exec.runGame(new MinMaxPacman(new StarterGhosts(),5,false),new StarterGhosts(),visual,delay);
+//		exec.runGame(new MinMaxPacman(new AggressiveGhosts(),100,false),new AggressiveGhosts(),visual,delay);
+
 		///*
 		//run the game in asynchronous mode.
-//		boolean visual=true;
-//		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
-//		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
-//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new AggressiveGhosts(),visual);	
-//		exec.runGameTimed(new DecisionTree(),new AggressiveGhosts(),visual);	
+		//		boolean visual=true;
+		//		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
+		//		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
+		//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new AggressiveGhosts(),visual);	
+		//		exec.runGameTimed(new DecisionTree(),new AggressiveGhosts(),visual);	
 		//*/
-		
+
 		/*
 		//run the game in asynchronous mode but advance as soon as both controllers are ready  - this is the mode of the competition.
 		//time limit of DELAY ms still applies.
 		boolean visual=true;
 		boolean fixedTime=false;
 		exec.runGameTimedSpeedOptimised(new RandomPacMan(),new RandomGhosts(),fixedTime,visual);
-		*/
-		
+		 */
+
 		/*
 		//run game in asynchronous mode and record it to file for replay at a later stage.
 		boolean visual=true;
@@ -95,41 +121,66 @@ public class Executor
 		//exec.replayGame(fileName,visual);
 		 */
 	}
-	
-    /**
-     * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
-     * against a chosen opponent: the random nature of the game means that performance can vary from game to game. 
-     * Running many games and looking at the average score (and standard deviation/error) helps to get a better
-     * idea of how well the controller is likely to do in the competition.
-     *
-     * @param pacManController The Pac-Man controller
-     * @param ghostController The Ghosts controller
-     * @param trials The number of trials to be executed
-     */
-    public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials)
-    {
-    	double avgScore=0;
-    	
-    	Random rnd=new Random(0);
+
+	/**
+	 * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
+	 * against a chosen opponent: the random nature of the game means that performance can vary from game to game. 
+	 * Running many games and looking at the average score (and standard deviation/error) helps to get a better
+	 * idea of how well the controller is likely to do in the competition.
+	 *
+	 * @param pacManController The Pac-Man controller
+	 * @param ghostController The Ghosts controller
+	 * @param trials The number of trials to be executed
+	 */
+	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials)
+	{
+		double avgScore=0;
+
+		Random rnd=new Random(0);
 		Game game;
-		
+
+		System.out.print("<> ");
 		for(int i=0;i<trials;i++)
 		{
 			game=new Game(rnd.nextLong());
-			
+
 			while(!game.gameOver())
 			{
-		        game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
-		        		ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
+				game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
+						ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
 			}
-			
+
 			avgScore+=game.getScore();
-			System.out.println(i+"\t"+game.getScore());
+			System.out.print(game.getScore()+" <> ");
 		}
-		
-		System.out.println(avgScore/trials);
-    }
-	
+
+		System.out.println("\n"+avgScore/trials);
+	}
+	public double runExperimentGene(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials)
+	{
+		double avgScore=0;
+
+		Random rnd=new Random(0);
+		Game game;
+
+		System.out.print("<> ");
+		for(int i=0;i<trials;i++)
+		{
+			game=new Game(rnd.nextLong());
+
+			while(!game.gameOver())
+			{
+				game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
+						ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
+			}
+
+			avgScore+=game.getScore();
+			System.out.print(game.getScore()+" <> ");
+		}
+
+		return (avgScore/trials);
+	}
+
 	/**
 	 * Run a game in asynchronous mode: the game waits until a move is returned. In order to slow thing down in case
 	 * the controllers return very quickly, a time limit can be used. If fasted gameplay is required, this delay
@@ -145,44 +196,44 @@ public class Executor
 		Game game=new Game(0);
 
 		GameView gv=null;
-		
+
 		if(visual)
 			gv=new GameView(game).showGame();
-		
+
 		while(!game.gameOver())
 		{
-	        game.advanceGame(pacManController.getMove(game.copy(),-1),ghostController.getMove(game.copy(),-1));
-	        
-	        try{Thread.sleep(delay);}catch(Exception e){}
-	        
-	        if(visual)
-	        	gv.repaint();
+			game.advanceGame(pacManController.getMove(game.copy(),-1),ghostController.getMove(game.copy(),-1));
+
+			try{Thread.sleep(delay);}catch(Exception e){}
+
+			if(visual)
+				gv.repaint();
 		}
 	}
-	
+
 	/**
-     * Run the game with time limit (asynchronous mode). This is how it will be done in the competition. 
-     * Can be played with and without visual display of game states.
-     *
-     * @param pacManController The Pac-Man controller
-     * @param ghostController The Ghosts controller
+	 * Run the game with time limit (asynchronous mode). This is how it will be done in the competition. 
+	 * Can be played with and without visual display of game states.
+	 *
+	 * @param pacManController The Pac-Man controller
+	 * @param ghostController The Ghosts controller
 	 * @param visual Indicates whether or not to use visuals
-     */
-    public void runGameTimed(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean visual)
+	 */
+	public void runGameTimed(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean visual)
 	{
 		Game game=new Game(0);
-		
+
 		GameView gv=null;
-		
+
 		if(visual)
 			gv=new GameView(game).showGame();
-		
+
 		if(pacManController instanceof HumanController)
 			gv.getFrame().addKeyListener(((HumanController)pacManController).getKeyboardInput());
-				
+
 		new Thread(pacManController).start();
 		new Thread(ghostController).start();
-		
+
 		while(!game.gameOver())
 		{
 			pacManController.update(game.copy(),System.currentTimeMillis()+DELAY);
@@ -197,105 +248,105 @@ public class Executor
 				e.printStackTrace();
 			}
 
-	        game.advanceGame(pacManController.getMove(),ghostController.getMove());	   
-	        
-	        if(visual)
-	        	gv.repaint();
+			game.advanceGame(pacManController.getMove(),ghostController.getMove());	   
+
+			if(visual)
+				gv.repaint();
 		}
-		
+
 		pacManController.terminate();
 		ghostController.terminate();
 	}
-	
-    /**
-     * Run the game in asynchronous mode but proceed as soon as both controllers replied. The time limit still applies so 
-     * so the game will proceed after 40ms regardless of whether the controllers managed to calculate a turn.
-     *     
-     * @param pacManController The Pac-Man controller
-     * @param ghostController The Ghosts controller
-     * @param fixedTime Whether or not to wait until 40ms are up even if both controllers already responded
-	 * @param visual Indicates whether or not to use visuals
-     */
-    public void runGameTimedSpeedOptimised(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean fixedTime,boolean visual)
- 	{
- 		Game game=new Game(0);
- 		
- 		GameView gv=null;
- 		
- 		if(visual)
- 			gv=new GameView(game).showGame();
- 		
- 		if(pacManController instanceof HumanController)
- 			gv.getFrame().addKeyListener(((HumanController)pacManController).getKeyboardInput());
- 				
- 		new Thread(pacManController).start();
- 		new Thread(ghostController).start();
- 		
- 		while(!game.gameOver())
- 		{
- 			pacManController.update(game.copy(),System.currentTimeMillis()+DELAY);
- 			ghostController.update(game.copy(),System.currentTimeMillis()+DELAY);
 
- 			try
+	/**
+	 * Run the game in asynchronous mode but proceed as soon as both controllers replied. The time limit still applies so 
+	 * so the game will proceed after 40ms regardless of whether the controllers managed to calculate a turn.
+	 *     
+	 * @param pacManController The Pac-Man controller
+	 * @param ghostController The Ghosts controller
+	 * @param fixedTime Whether or not to wait until 40ms are up even if both controllers already responded
+	 * @param visual Indicates whether or not to use visuals
+	 */
+	public void runGameTimedSpeedOptimised(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean fixedTime,boolean visual)
+	{
+		Game game=new Game(0);
+
+		GameView gv=null;
+
+		if(visual)
+			gv=new GameView(game).showGame();
+
+		if(pacManController instanceof HumanController)
+			gv.getFrame().addKeyListener(((HumanController)pacManController).getKeyboardInput());
+
+		new Thread(pacManController).start();
+		new Thread(ghostController).start();
+
+		while(!game.gameOver())
+		{
+			pacManController.update(game.copy(),System.currentTimeMillis()+DELAY);
+			ghostController.update(game.copy(),System.currentTimeMillis()+DELAY);
+
+			try
 			{
 				int waited=DELAY/INTERVAL_WAIT;
-				
+
 				for(int j=0;j<DELAY/INTERVAL_WAIT;j++)
 				{
 					Thread.sleep(INTERVAL_WAIT);
-					
+
 					if(pacManController.hasComputed() && ghostController.hasComputed())
 					{
 						waited=j;
 						break;
 					}
 				}
-				
+
 				if(fixedTime)
 					Thread.sleep(((DELAY/INTERVAL_WAIT)-waited)*INTERVAL_WAIT);
-				
+
 				game.advanceGame(pacManController.getMove(),ghostController.getMove());	
 			}
 			catch(InterruptedException e)
 			{
 				e.printStackTrace();
 			}
- 	        
- 	        if(visual)
- 	        	gv.repaint();
- 		}
- 		
- 		pacManController.terminate();
- 		ghostController.terminate();
- 	}
-    
+
+			if(visual)
+				gv.repaint();
+		}
+
+		pacManController.terminate();
+		ghostController.terminate();
+	}
+
 	/**
 	 * Run a game in asynchronous mode and recorded.
 	 *
-     * @param pacManController The Pac-Man controller
-     * @param ghostController The Ghosts controller
-     * @param visual Whether to run the game with visuals
+	 * @param pacManController The Pac-Man controller
+	 * @param ghostController The Ghosts controller
+	 * @param visual Whether to run the game with visuals
 	 * @param fileName The file name of the file that saves the replay
 	 */
 	public void runGameTimedRecorded(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean visual,String fileName)
 	{
 		StringBuilder replay=new StringBuilder();
-		
+
 		Game game=new Game(0);
-		
+
 		GameView gv=null;
-		
+
 		if(visual)
 		{
 			gv=new GameView(game).showGame();
-			
+
 			if(pacManController instanceof HumanController)
 				gv.getFrame().addKeyListener(((HumanController)pacManController).getKeyboardInput());
 		}		
-		
+
 		new Thread(pacManController).start();
 		new Thread(ghostController).start();
-		
+
 		while(!game.gameOver())
 		{
 			pacManController.update(game.copy(),System.currentTimeMillis()+DELAY);
@@ -310,20 +361,20 @@ public class Executor
 				e.printStackTrace();
 			}
 
-	        game.advanceGame(pacManController.getMove(),ghostController.getMove());	        
-	        
-	        if(visual)
-	        	gv.repaint();
-	        
-	        replay.append(game.getGameState()+"\n");
+			game.advanceGame(pacManController.getMove(),ghostController.getMove());	        
+
+			if(visual)
+				gv.repaint();
+
+			replay.append(game.getGameState()+"\n");
 		}
-		
+
 		pacManController.terminate();
 		ghostController.terminate();
-		
+
 		saveToFile(replay.toString(),fileName,false);
 	}
-	
+
 	/**
 	 * Replay a previously saved game.
 	 *
@@ -333,14 +384,14 @@ public class Executor
 	public void replayGame(String fileName,boolean visual)
 	{
 		ArrayList<String> timeSteps=loadReplay(fileName);
-		
+
 		Game game=new Game(0);
-		
+
 		GameView gv=null;
-		
+
 		if(visual)
 			gv=new GameView(game).showGame();
-		
+
 		for(int j=0;j<timeSteps.size();j++)
 		{			
 			game.setGameState(timeSteps.get(j));
@@ -353,53 +404,53 @@ public class Executor
 			{
 				e.printStackTrace();
 			}
-	        if(visual)
-	        	gv.repaint();
+			if(visual)
+				gv.repaint();
 		}
 	}
-	
+
 	//save file for replays
-    public static void saveToFile(String data,String name,boolean append)
-    {
-        try 
-        {
-            FileOutputStream outS=new FileOutputStream(name,append);
-            PrintWriter pw=new PrintWriter(outS);
-
-            pw.println(data);
-            pw.flush();
-            outS.close();
-
-        } 
-        catch (IOException e)
-        {
-            System.out.println("Could not save data!");	
-        }
-    }  
-
-    //load a replay
-    private static ArrayList<String> loadReplay(String fileName)
+	public static void saveToFile(String data,String name,boolean append)
 	{
-    	ArrayList<String> replay=new ArrayList<String>();
-		
-        try
-        {         	
-        	BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));	 
-            String input=br.readLine();		
-            
-            while(input!=null)
-            {
-            	if(!input.equals(""))
-            		replay.add(input);
+		try 
+		{
+			FileOutputStream outS=new FileOutputStream(name,append);
+			PrintWriter pw=new PrintWriter(outS);
 
-            	input=br.readLine();	
-            }
-        }
-        catch(IOException ioe)
-        {
-            ioe.printStackTrace();
-        }
-        
-        return replay;
+			pw.println(data);
+			pw.flush();
+			outS.close();
+
+		} 
+		catch (IOException e)
+		{
+			System.out.println("Could not save data!");	
+		}
+	}  
+
+	//load a replay
+	private static ArrayList<String> loadReplay(String fileName)
+	{
+		ArrayList<String> replay=new ArrayList<String>();
+
+		try
+		{         	
+			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));	 
+			String input=br.readLine();		
+
+			while(input!=null)
+			{
+				if(!input.equals(""))
+					replay.add(input);
+
+				input=br.readLine();	
+			}
+		}
+		catch(IOException ioe)
+		{
+			ioe.printStackTrace();
+		}
+
+		return replay;
 	}
 }
