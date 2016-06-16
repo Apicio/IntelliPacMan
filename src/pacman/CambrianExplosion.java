@@ -5,7 +5,7 @@ import pacman.controllers.examples.StarterGhosts;
 import pacman.game.Game;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
-
+import static java.lang.Math.toIntExact;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.PriorityQueue;
@@ -32,6 +32,7 @@ public class CambrianExplosion {
 	private double TEMPERATURE;
 	private double REV_TEMPERATURE;
 	private double DELTA_TEMP;
+	private PriorityQueue<Organism> Pop;
 	private PriorityQueue<Organism> mutatePop;
 	private PriorityQueue<Organism> crossoverPop;
 	private PriorityQueue<Organism> combinationPop;
@@ -40,7 +41,7 @@ public class CambrianExplosion {
 	private PriorityQueue<Organism> combinationPopSim;
 	private Controller<MOVE> pacManController;
 	private Controller<EnumMap<GHOST, MOVE>> ghostController;
-	private static int NUMWEIGHTS = 4;
+	private static int NUMWEIGHTS = 8;
 
 
 	public CambrianExplosion(int numGen, int popSize, int xfactor, Controller<MOVE> pacManController, Controller<EnumMap<GHOST,MOVE>> ghostController) {
@@ -60,6 +61,7 @@ public class CambrianExplosion {
 		mutatePopSim = new PriorityQueue<>();
 		crossoverPopSim = new PriorityQueue<>();
 		combinationPopSim = new PriorityQueue<>();
+		Pop = new PriorityQueue<>();
 	}
 
 	long nextLong(Random rng, long n) {
@@ -88,6 +90,7 @@ public class CambrianExplosion {
 
 		// do a deep copy of population to generate the populations we will use
 		for (Organism orgo : initialPopulation) {
+			Pop.add(new Organism(orgo));
 			mutatePop.add(new Organism(orgo));
 			crossoverPop.add(new Organism(orgo));
 			combinationPop.add(new Organism(orgo));
@@ -99,19 +102,35 @@ public class CambrianExplosion {
 		ArrayList<Future> threads = new ArrayList<>();
 		ExecutorService executor = Executors.newFixedThreadPool(6);
 		// Spawn threads to make things fast
-		EvolThread mutateThread = new EvolThread(mutatePop, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, 0, 0);
-		EvolThread crossoverThread = new EvolThread(crossoverPop, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, 0, 0);
-		EvolThread combinationThread = new EvolThread(combinationPop, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, 0, 0);
-		EvolThread mutateThreadSim = new EvolThread(mutatePopSim, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
-		EvolThread crossoverThreadSim = new EvolThread(crossoverPopSim, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
-		EvolThread combinationThreadSim = new EvolThread(combinationPopSim, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
-				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+//		EvolThread mutateThread = new EvolThread(mutatePop, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, 0, 0);
+//		EvolThread crossoverThread = new EvolThread(crossoverPop, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, 0, 0);
+//		EvolThread combinationThread = new EvolThread(combinationPop, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, 0, 0);
+//		EvolThread mutateThreadSim = new EvolThread(mutatePopSim, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+//		EvolThread crossoverThreadSim = new EvolThread(crossoverPopSim, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+//		EvolThread combinationThreadSim = new EvolThread(combinationPopSim, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+//				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
 
+		EvolThread mutateThreadSim = new EvolThread(Pop, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+		EvolThread crossoverThreadSim = new EvolThread(Pop, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+		EvolThread combinationThreadSim = new EvolThread(Pop, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, TEMPERATURE, DELTA_TEMP);
+		EvolThread mutateThread = new EvolThread(Pop, MUTATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, 0, 0);
+		EvolThread crossoverThread = new EvolThread(Pop, CROSSOVER, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, 0, 0);
+		EvolThread combinationThread = new EvolThread(Pop, COMBINATION, RNMAX, RNMIN, NUM_GEN, POP_SIZE,
+				INIT_POP_SIZE, 0, 0);
+
+
+
+		
 		threads.add(executor.submit(mutateThread));
 		threads.add(executor.submit(crossoverThread));
 		threads.add(executor.submit(combinationThread));
@@ -292,10 +311,15 @@ public class CambrianExplosion {
 					curGame = game.copy();
 					orgo.setGame(curGame);
 					curWeights = orgo.getWeights();
-					EvaluationGene.a = curWeights[0];
-					EvaluationGene.b = curWeights[1];
-					EvaluationGene.c = curWeights[2];
-					EvaluationGene.d = curWeights[3];
+					EvaluationGene.GHOST1 = toIntExact(curWeights[0]);
+					EvaluationGene.GHOST2 = toIntExact(curWeights[1]);
+					EvaluationGene.GHOST3 = toIntExact(curWeights[2]);
+					EvaluationGene.GHOST4 = toIntExact(curWeights[3]);
+					EvaluationGene.LIVES = toIntExact(curWeights[4]);
+					EvaluationGene.MIN_GHOST_DIST = toIntExact(curWeights[5]);
+					EvaluationGene.PILL = toIntExact(curWeights[6]);
+					EvaluationGene.SCORE = toIntExact(curWeights[7]);
+					
 					while (!curGame.gameOver()) {
 						curGame.advanceGame(pacManController.getMove(curGame.copy(), -1), ghostController.getMove(curGame.copy(), -1));
 					}

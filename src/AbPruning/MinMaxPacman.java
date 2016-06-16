@@ -1,6 +1,7 @@
 package AbPruning;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -64,16 +65,17 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 	private State minimax(State node, boolean isMax) {
-		if(node.depth == depth){
+		if(node.depth == depth || node.game.getActivePillsIndices().length == 0){
 			if(isMax)
-				node.alpha = EvaluationGene.evaluateGameState(node.game);
+				node.alpha = Evaluation_.evaluateGameState(node.game);
 			else 
-				node.beta = EvaluationGene.evaluateGameState(node.game);
+				node.beta = Evaluation_.evaluateGameState(node.game);
 			return node;
 		}
 
 		if(isMax){
 			ArrayList<State> next = getNextPACMANMoves(node);
+			Collections.shuffle(next);
 			for(State child : next){
 				node.alpha = Math.max(node.alpha, minimax(child,false).beta);
 				if(node.beta <= node.alpha)
@@ -82,6 +84,7 @@ public class MinMaxPacman extends Controller<MOVE>
 			return node;
 		}else{
 			ArrayList<State> next = getNextGHOSTMoves(node);
+			Collections.shuffle(next);
 			if(!(ghostController instanceof RandomGhosts)){
 				for(State child : next){
 					node.beta = Math.min(node.beta, minimax(child,true).alpha);
@@ -90,11 +93,10 @@ public class MinMaxPacman extends Controller<MOVE>
 				}
 				return node;
 			}else{
-				for(State child : next){
-					double res = 0;
+				double res = 0;
+				for(State child : next)
 					res += minimax(child,true).alpha;
-					node.beta = res/next.size();
-				}
+				node.beta = res/next.size();
 				return node;
 			}
 		}

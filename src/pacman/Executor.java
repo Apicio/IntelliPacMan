@@ -74,9 +74,10 @@ public class Executor
 		//run a game in synchronous mode: game waits until controllers respond.
 		int delay=10;
 		boolean visual=true;
-        System.out.println("Trial: 1 Generations: 20 PopSize: 50");
-        CambrianExplosion boom1 = new CambrianExplosion(20, 50, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-        boom1.explode();
+		exec.runGame(new MinMaxPacman(new RandomGhosts(),5,false),new RandomGhosts(),visual,delay);
+//        System.out.println("Trial: 1 Generations: 100 PopSize: 50");
+//        CambrianExplosion boom1 = new CambrianExplosion(100, 50, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+//        boom1.explode();
 //        System.out.println("Trial: 2 Generations: 5 PopSize: 20");
 //        CambrianExplosion boom2 = new CambrianExplosion(5, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
 //        boom2.explode();
@@ -94,7 +95,7 @@ public class Executor
 //        boom6.explode();
 //
 //		//exec.runGame(new MinMaxPacman(new StarterGhosts(),5,false),new StarterGhosts(),visual,delay);
-//		exec.runGame(new MinMaxPacman(new AggressiveGhosts(),100,false),new AggressiveGhosts(),visual,delay);
+//		
 
 		///*
 		//run the game in asynchronous mode.

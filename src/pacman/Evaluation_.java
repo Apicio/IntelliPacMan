@@ -1,5 +1,7 @@
 package pacman;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import DecisionTree.Node;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -47,11 +49,12 @@ public class Evaluation_ {
 			ghostDist = MIN_GHOST_DIST*10000;
 		
 		/*Preferiamo la mossa che ci porta verso la pallina (energetica o non) più vicina*/
-		int[] activePillIndices = g.getActivePillsIndices();
-		int[] activePowerPillIndices = g.getActivePowerPillsIndices();
-		int[] pillIndices = new int[activePillIndices.length+activePowerPillIndices.length];
-		System.arraycopy(activePillIndices, 0, pillIndices, 0, activePillIndices.length);
-		System.arraycopy(activePowerPillIndices, 0, pillIndices, activePillIndices.length-1, activePowerPillIndices.length);
+//		int[] activePillIndices = g.getActivePillsIndices();
+//		int[] activePowerPillIndices = g.getActivePowerPillsIndices();
+		int[] pillIndices = ArrayUtils.addAll(g.getActivePillsIndices(), g.getActivePowerPillsIndices());	
+//		int[] pillIndices = new int[activePillIndices.length+activePowerPillIndices.length];	
+//		System.arraycopy(activePillIndices, 0, pillIndices, 0, activePillIndices.length);
+//		System.arraycopy(activePowerPillIndices, 0, pillIndices, activePillIndices.length-1, activePowerPillIndices.length);
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 
 		toReturn =  100*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
