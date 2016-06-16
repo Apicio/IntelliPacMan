@@ -103,12 +103,8 @@ public class MyAStar extends Controller<MOVE>
 
 	public MOVE getMove(Game game, long timeDue) 
 	{
-		if(level != game.getCurrentLevel()){
-			index = game.getActivePillsIndices();
-			level = game.getCurrentLevel();
-			a = new AStar();
-			System.out.println("NextLevel!!");
-		}
+		index = game.getPillIndices();
+		a = new AStar();
 		a.createGraph(game.getCurrentMaze().graph);
 		return computeMOVE(game, false);
 	}
