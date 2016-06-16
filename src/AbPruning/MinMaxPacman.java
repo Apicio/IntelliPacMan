@@ -58,11 +58,6 @@ public class MinMaxPacman extends Controller<MOVE>
 				myMove = find.pacMove;
 			}
 		}
-		AStar a = new AStar();
-		a.createGraph(game.getCurrentMaze().graph);
-		for(GHOST g: GHOST.values())
-			if(game.isGhostEdible(g))
-				return a.getMoveTo(game.getGhostCurrentNodeIndex(g), game);
 		
 		return myMove;
 	}
