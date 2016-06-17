@@ -1,12 +1,14 @@
 package pacman.entries.pacman;
 
-import java.util.ArrayList;
-
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
+import pacman.game.internal.AStar;
+import pacman.game.internal.AStarONE;
+import pacman.game.internal.AStarTWO;
+import pacman.game.internal.AbstractAStar;
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to
@@ -130,9 +132,10 @@ public class Ambush extends Controller<MOVE>
 	static private int NG_THR7 = 9;
 	
 	static private int NOEDIBLEGHOST = -1;
-	private static final int MIN_DISTANCE=20;	//if a ghost is this close, run away
-
-
+	
+	AStar one = new AStar();
+	AStar two = new AStar();
+	
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		int pacManIndex = game.getPacmanCurrentNodeIndex();
@@ -141,6 +144,9 @@ public class Ambush extends Controller<MOVE>
 		int powerPillIndex = getClosestPowerPill(game,pacManIndex);
 		int ghostNext2PPill = getNearestGhostToPowerPill(game);
 		int edibleGhost = getNearestEdibleGhost(game);
+		
+		one.createGraph(game.getCurrentMaze().graph);
+		two.createGraph(game.getCurrentMaze().graph);		
 
 //		for(GHOST ghost : GHOST.values())
 //			if(game.getGhostEdibleTime(ghost)==0 && game.getGhostLairTime(ghost)==0)
@@ -161,7 +167,7 @@ public class Ambush extends Controller<MOVE>
 					double npp = game.getShortestPathDistance(pacManIndex, powerPillIndex);
 					double gnnpp = game.getShortestPathDistance(pacManIndex, ghostNext2PPill);
 					if(npp <= gnnpp){
-						return game.getNextMoveTowardsTarget(pacManIndex,powerPillIndex,DM.PATH);
+						return two.getMoveTo(powerPillIndex, game);
 					}
 				}
 		// Rule 3
@@ -170,25 +176,25 @@ public class Ambush extends Controller<MOVE>
 				double npp = game.getShortestPathDistance(pacManIndex, powerPillIndex);
 				double gnnpp = game.getShortestPathDistance(pacManIndex, ghostNext2PPill);
 				if(npp <= gnnpp){
-					return game.getNextMoveTowardsTarget(pacManIndex,powerPillIndex,DM.PATH);
+					return one.getMoveTo(powerPillIndex, game);
 				}
 			}
 		// Rule 4
 		if(edibleGhost != NOEDIBLEGHOST)
 			if(game.getShortestPathDistance(pacManIndex, ghostIndex) <= NG_THR4)
 				if(game.getShortestPathDistance(pacManIndex, edibleGhost) <= NEG_THR4)
-					return game.getNextMoveTowardsTarget(pacManIndex,edibleGhost,DM.PATH);
+					return one.getMoveTo(edibleGhost, game);
 		// Rule 5
 		if(game.getShortestPathDistance(pacManIndex, ghostIndex) <= NG_THR5)
-			return game.getNextMoveTowardsTarget(pacManIndex,pillIndex,DM.PATH);
+			return one.getMoveTo(pillIndex, game);
 		// Rule 6
 		if(edibleGhost != NOEDIBLEGHOST)
 			if(game.getShortestPathDistance(pacManIndex, ghostIndex) >= NG_THR6)
 				if(game.getShortestPathDistance(pacManIndex, edibleGhost) <= NEG_THR6)
-					return game.getNextMoveTowardsTarget(pacManIndex,edibleGhost,DM.PATH);				
+					return one.getMoveTo(edibleGhost, game);			
 		// Rule 7
 		if(game.getShortestPathDistance(pacManIndex, ghostIndex) >= NG_THR7)
-			return game.getNextMoveTowardsTarget(pacManIndex,pillIndex,DM.PATH);
+			return one.getMoveTo(pillIndex, game);
 
 		return MOVE.NEUTRAL;
 	}

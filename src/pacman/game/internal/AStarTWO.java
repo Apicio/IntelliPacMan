@@ -38,13 +38,13 @@ public class AStarTWO extends AbstractAStar
 			return cost;
 		
 		cost +=500;
-		for(GHOST g : GHOST.values())
-			if(game.getGhostCurrentNodeIndex(g) == index){
-				cost +=1000000;
-				if(game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), DM.PATH) < 100)
-					cost +=6000000;
-			}
-			System.out.println(cost);
+//		for(GHOST g : GHOST.values())
+//			if(game.getGhostCurrentNodeIndex(g) == index){
+//				cost +=1000000;
+//				if(game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), DM.PATH) < 100)
+//					cost +=6000000;
+//			}
+			//System.out.println(cost);
 		return cost;
 	}
 

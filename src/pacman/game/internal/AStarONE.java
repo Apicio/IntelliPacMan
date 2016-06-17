@@ -46,7 +46,7 @@ public class AStarONE extends AbstractAStar
 				if(game.getDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(g), DM.PATH) < 20)
 					cost +=6000000;
 			}
-		System.out.println(cost);
+		//System.out.println(cost);
 		return cost;
 	}
 }

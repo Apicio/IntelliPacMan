@@ -23,4 +23,5 @@ public final class PacMan
 	{
 		return new PacMan(currentNodeIndex, lastMoveMade, numberOfLivesRemaining, hasReceivedExtraLife);
 	}
+	
 }

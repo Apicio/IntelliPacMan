@@ -3,8 +3,8 @@ package DecisionTree;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
-import pacman.Evaluation;
 import pacman.EvaluationGene;
+import pacman.Evaluation_;
 import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -32,7 +32,7 @@ public class DFSTree extends Controller<MOVE>
 		ArrayList<Node> neighbors = node.getNeighbors();
 		if (neighbors == null || node.getGameState().gameOver() || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			//return Evaluation.evaluateGameState(node, node.getGameState().getPacmanNumberOfLivesRemaining() < life); // end of branch return heuristic
-			return EvaluationGene.evaluateGameState(node.getGameState()); // end of branch return heuristic
+			return Evaluation_.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
 		int bestValue = Integer.MIN_VALUE;
 		for (Node neighbor : neighbors) {		
@@ -67,6 +67,6 @@ public class DFSTree extends Controller<MOVE>
 		int upValue = dfsSearch(neighbors.get(2),game.getPacmanNumberOfLivesRemaining());
 		int downValue = dfsSearch(neighbors.get(3),game.getPacmanNumberOfLivesRemaining());
 		
-		return Evaluation.getBestMove(leftValue, rightValue, upValue, downValue);
+		return Evaluation_.getBestMove(leftValue, rightValue, upValue, downValue);
 	}
 }

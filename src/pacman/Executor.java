@@ -9,8 +9,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
-
 import AbPruning.MinMaxPacman;
+import AbPruning.MinMaxPacman2;
 import DecisionTree.DFSTree;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
@@ -52,50 +52,56 @@ public class Executor
 	 *
 	 * @param args the command line arguments
 	 */
+	private static int numTrials=10;
+	private static int delay=1;
+	private static boolean visual=true;
+	private static Executor exec=new Executor();
+
 	public static void main(String[] args)
 	{
-		Executor exec=new Executor();
 
+		//exec.runGameTurn(new StarterPacMan(),new StarterGhosts(),visual,true, delay);
 
 		//run multiple games in batch mode - good for testing.
-//		boolean canReverse = true;
-		int numTrials=10;
-//		for(int i=2; i<220; i++){	
-//			//exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,canReverse),new AggressiveGhosts(),numTrials); 
-//			exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,!canReverse),new AggressiveGhosts(),numTrials); 
-//			System.out.println("DEEP = "+i);
-//		}
-//		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
+		//		boolean canReverse = true;
+		//		for(int i=2; i<220; i++){	
+		//			//exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,canReverse),new AggressiveGhosts(),numTrials); 
+		//			exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,!canReverse),new AggressiveGhosts(),numTrials); 
+		//			System.out.println("DEEP = "+i);
+		//		}
+		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),10,true); 
 
-//		int numTrials=10;
-//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
- //int numTrials=10;
-	//	exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
+		//		int numTrials=10;
+		//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
+		// 
+		//		
+		//		
+		//		exec.runGame(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),visual,delay);
 		//run a game in synchronous mode: game waits until controllers respond.
-		int delay=10;
-		boolean visual=true;
-		exec.runGame(new MinMaxPacman(new RandomGhosts(),5,false),new RandomGhosts(),visual,delay);
-//        System.out.println("Trial: 1 Generations: 100 PopSize: 50");
-//        CambrianExplosion boom1 = new CambrianExplosion(100, 50, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom1.explode();
-//        System.out.println("Trial: 2 Generations: 5 PopSize: 20");
-//        CambrianExplosion boom2 = new CambrianExplosion(5, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom2.explode();
-//        System.out.println("Trial: 3 Generations: 10 PopSize: 10");
-//        CambrianExplosion boom3 = new CambrianExplosion(10, 10, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom3.explode();
-//        System.out.println("Trial: 4 Generations: 10 PopSize: 20");
-//        CambrianExplosion boom4 = new CambrianExplosion(10, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom4.explode();
-//        System.out.println("Trial: 5 Generations: 20 PopSize: 20");
-//        CambrianExplosion boom5 = new CambrianExplosion(20, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom5.explode();
-//        System.out.println("Trial: 6 Generations: 100 PopSize: 20");
-//        CambrianExplosion boom6 = new CambrianExplosion(100, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
-//        boom6.explode();
-//
-//		//exec.runGame(new MinMaxPacman(new StarterGhosts(),5,false),new StarterGhosts(),visual,delay);
-//		
+		//		int delay=10;
+		//		boolean visual=true;
+		//		exec.runGame(new MyAstar(new RandomGhosts()),new RandomGhosts(),visual,delay);
+		//        System.out.println("Trial: 1 Generations: 100 PopSize: 50");
+		//        CambrianExplosion boom1 = new CambrianExplosion(100, 50, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom1.explode();
+		//        System.out.println("Trial: 2 Generations: 5 PopSize: 20");
+		//        CambrianExplosion boom2 = new CambrianExplosion(5, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom2.explode();
+		//        System.out.println("Trial: 3 Generations: 10 PopSize: 10");
+		//        CambrianExplosion boom3 = new CambrianExplosion(10, 10, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom3.explode();
+		//        System.out.println("Trial: 4 Generations: 10 PopSize: 20");
+		//        CambrianExplosion boom4 = new CambrianExplosion(10, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom4.explode();
+		//        System.out.println("Trial: 5 Generations: 20 PopSize: 20");
+		//        CambrianExplosion boom5 = new CambrianExplosion(20, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom5.explode();
+		//        System.out.println("Trial: 6 Generations: 100 PopSize: 20");
+		//        CambrianExplosion boom6 = new CambrianExplosion(100, 20, 1, new MinMaxPacman(new AggressiveGhosts(),30,false),new AggressiveGhosts());
+		//        boom6.explode();
+		//
+		//		//exec.runGame(new MinMaxPacman(new StarterGhosts(),5,false),new StarterGhosts(),visual,delay);
+		//		
 
 		///*
 		//run the game in asynchronous mode.
@@ -133,24 +139,32 @@ public class Executor
 	 * @param ghostController The Ghosts controller
 	 * @param trials The number of trials to be executed
 	 */
-	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials)
+	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials, boolean visual)
 	{
 		double avgScore=0;
 
 		Random rnd=new Random(0);
 		Game game;
-
+		GameView gv=null;
 		System.out.print("<> ");
 		for(int i=0;i<trials;i++)
 		{
 			game=new Game(rnd.nextLong());
+			
+			if(visual)
+				if(gv == null)
+					gv=new GameView(game).showGame();
+				else
+					gv.updateGame(game);
 
 			while(!game.gameOver())
 			{
 				game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
 						ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
-			}
 
+				if(visual)
+					gv.repaint();
+			}
 			avgScore+=game.getScore();
 			System.out.print(game.getScore()+" <> ");
 		}
@@ -173,6 +187,8 @@ public class Executor
 			{
 				game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
 						ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
+
+
 			}
 
 			avgScore+=game.getScore();
@@ -204,6 +220,48 @@ public class Executor
 		while(!game.gameOver())
 		{
 			game.advanceGame(pacManController.getMove(game.copy(),-1),ghostController.getMove(game.copy(),-1));
+
+			try{Thread.sleep(delay);}catch(Exception e){}
+
+			if(visual)
+				gv.repaint();
+		}
+	}
+	public void runGameTurn(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean visual,boolean isPacman,int delay)
+	{
+		try {
+			Game game=new Game(0);
+
+			GameView gv=null;
+
+			if(visual)
+				gv=new GameView(game).showGame();
+
+			while(!game.gameOver())
+			{
+				if(isPacman)
+					game.advancePacMan(pacManController.getMove(game.copy(),-1));
+				else
+					game.advanceGhosts(ghostController.getMove(game.copy(),-1));
+				Thread.sleep(delay);
+				if(visual)
+					gv.repaint();
+			}
+		} catch (InterruptedException e1) {e1.printStackTrace();}
+	}
+
+	public void runGamePacMan(Controller<MOVE> pacManController,boolean visual,int delay)
+	{
+		Game game=new Game(0);
+
+		GameView gv=null;
+
+		if(visual)
+			gv=new GameView(game).showGame();
+
+		while(!game.gameOver())
+		{
+
 
 			try{Thread.sleep(delay);}catch(Exception e){}
 

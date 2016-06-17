@@ -3,17 +3,14 @@ package pacman.entries.pacman;
 import java.util.ArrayList;
 
 import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Random;
-
-import pacman.Evaluation;
 import pacman.Evaluation_;
 import pacman.controllers.Controller;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.AStar;
+import pacman.game.internal.AStarONE;
+import pacman.game.internal.AStarTWO;
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to
@@ -23,14 +20,11 @@ import pacman.game.internal.AStar;
 public class MyAStar extends Controller<MOVE>
 {
 	private Controller<EnumMap<GHOST,MOVE>> controllerGhosts; 
-	private boolean firstTime = true;
 	private int[] index;
-	private int level;
 	private AStar a;
 
 	public MyAStar (Controller<EnumMap<GHOST,MOVE>> ghosts){
 		this.controllerGhosts = ghosts;
-		this.level = -1;
 	}
 
 	public MOVE computeMOVE(Game game, boolean isAll){

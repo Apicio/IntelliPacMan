@@ -14,11 +14,15 @@ import pacman.game.Game;
 public class Evaluation_ {
 
 	public  static final int MIN_GHOST_DIST = 10;
+	public static final int CROWDED_DISTANCE=30;
+	
 	public static int evaluateGameState(Game game) {
 		Node node = new Node();
 		node.setGameState(game);
 		return evaluateGameState(node, false); 
 	}
+	
+	public static Game initGame;
 
 	public static int evaluateGameState(Node node, boolean IsCollided) {
 		Game g = node.getGameState();
@@ -39,6 +43,7 @@ public class Evaluation_ {
 				}
 			}
 		}
+		
 		/* Se abbiamo una distanza più corta ed una seconda distanza più corta, facciamo la media */	
 		if(shortestGhostDist != Integer.MAX_VALUE && shortestGhostDist !=-1 && shortestGhostDist<MIN_GHOST_DIST )
 			if(secondShortestGhostDist != Integer.MAX_VALUE && secondShortestGhostDist !=-1 && secondShortestGhostDist<MIN_GHOST_DIST ) 
@@ -57,10 +62,22 @@ public class Evaluation_ {
 //		System.arraycopy(activePowerPillIndices, 0, pillIndices, activePillIndices.length-1, activePowerPillIndices.length);
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 
-		toReturn =  100*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+		toReturn =  50*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
 	
 		return toReturn;
 	}
+	
+    private static boolean isCrowded(Game game)
+    {
+    	GHOST[] ghosts=GHOST.values();
+        float distance=0;
+        
+        for (int i=0;i<ghosts.length-1;i++)
+            for(int j=i+1;j<ghosts.length;j++)
+                distance+=game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghosts[i]),game.getGhostCurrentNodeIndex(ghosts[j]));
+        
+        return (distance/6)<CROWDED_DISTANCE ? true : false;
+    }
 
 	public static MOVE getBestMove(int leftValue, int rightValue, int upValue, int downValue) {
 

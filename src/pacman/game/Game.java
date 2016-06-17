@@ -1665,4 +1665,20 @@ public final class Game
 
 		return caches[mazeIndex].getPathDistanceFromA2B(fromNodeIndex,toNodeIndex,lastMoveMade);
 	}
+	
+	public void advancePacMan(MOVE pacManMove)
+	{		
+		updatePacMan(pacManMove);	
+		_feast();									//ghosts eat pac-man or vice versa		
+		_updatePacManExtraLife();
+		totalTime++;
+		currentLevelTime++;
+		_checkLevelState();							//check if level/game is over
+	}
+	public void advanceGhosts(EnumMap<GHOST,MOVE> ghostMoves)
+	{		
+		updateGhosts(ghostMoves);
+		updateGame();
+	}
+
 }

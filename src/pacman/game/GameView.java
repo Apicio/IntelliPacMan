@@ -25,7 +25,7 @@ import static pacman.game.Constants.*;
 @SuppressWarnings("serial")
 public final class GameView extends JComponent 
 {	
-    private final Game game;
+    private Game game;
     private Images images;    
     private MOVE lastPacManMove;
     private int time;
@@ -55,6 +55,13 @@ public final class GameView extends JComponent
         time=game.getTotalTime();
     }
     
+    public void updateGame(Game game){
+        this.game=game;
+        
+        images=new Images();
+        lastPacManMove=game.getPacmanLastMoveMade();
+        time=game.getTotalTime();
+    }
     ///////////////////////////////////////////////
     ////// Visual aids for debugging: start ///////
     ///////////////////////////////////////////////
