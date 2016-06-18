@@ -3,7 +3,7 @@ package AbPruning;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import pacman.Evaluation_;
+import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.RandomGhosts;
 import pacman.game.Constants.GHOST;
@@ -54,9 +54,9 @@ public class MinMaxPacman extends Controller<MOVE>
 	private State minimax(State node, boolean isMax) {
 		if(node.depth == depth || node.game.getActivePillsIndices().length == 0){
 			if(isMax)
-				node.alpha = Evaluation_.evaluateGameState(node.game);
+				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 
-				node.beta = Evaluation_.evaluateGameState(node.game);
+				node.beta = EvaluationHeuristic.evaluateGameState(node.game);
 			return node;
 		}
 
@@ -126,9 +126,6 @@ public class MinMaxPacman extends Controller<MOVE>
 						tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
 						State c = new State();
 						c.game = tmpGame;
-						c.alpha = gameState.alpha;
-						c.beta = gameState.beta;
-						c.depth = gameState.depth+1;
 						c.pacMove = gameState.pacMove;
 						toReturn.add(c);
 					}
@@ -145,9 +142,6 @@ public class MinMaxPacman extends Controller<MOVE>
 		tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
 		State c = new State();
 		c.game = tmpGame;
-		c.alpha = gameState.alpha;
-		c.beta = gameState.beta;
-		c.depth = gameState.depth+1;
 		c.pacMove = gameState.pacMove;
 		toReturn.add(c);
 		return toReturn;
@@ -172,9 +166,6 @@ public class MinMaxPacman extends Controller<MOVE>
 				c.pacMove = move;
 			else
 				c.pacMove = gameState.pacMove;
-			c.alpha = gameState.alpha;
-			c.beta = gameState.beta;
-			c.depth = gameState.depth+1;
 			toReturn.add(c);
 		}
 		return toReturn;

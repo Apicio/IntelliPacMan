@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import DecisionTree.Node;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -14,7 +13,7 @@ import pacman.game.Game;
 
 
 
-public class Evaluation_ {
+public class EvaluationHeuristic {
 
 	public  static final int MIN_GHOST_DIST = 10;
 	public static final int CROWDED_DISTANCE=30;
