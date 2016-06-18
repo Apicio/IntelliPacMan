@@ -1,13 +1,18 @@
 package pacman;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Random;
 import AbPruning.MinMaxPacman;
 import AbPruning.MinMaxPacman2;
@@ -54,15 +59,29 @@ public class Executor
 	private static int delay=1;
 	private static boolean visual=true;
 	private static Executor exec=new Executor();
+	private static HashMap<String, Integer> bestScores;
 
 	public static void main(String[] args)
 	{
-
-//		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),10,true); 
-		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
+		try {
+		/* Load Best Scores*/
+		File f = new File("Scores.ser");
+		if(f.exists()){
+			FileInputStream fout = new FileInputStream("Scores.ser");
+			ObjectInputStream ois = new ObjectInputStream(fout);
+			bestScores = (HashMap<String, Integer>) ois.readObject(); 
+		}else{
+			bestScores = new HashMap<String, Integer>();
+		}		
+		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),500,true,true); 
+//		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new MyRandomPacMan(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
-//		exec.runExperiment(new DFSTree(),new AggressiveGhosts(),10,true);
+//		exec.runExperiment(new Greedy(),new RandomGhosts(),10,true);
+		
+		FileOutputStream fout = new FileOutputStream("Scores.ser");
+		ObjectOutputStream oos = new ObjectOutputStream(fout);
+		oos.writeObject(bestScores);
 		
 		
 		//exec.runGameTurn(new StarterPacMan(),new StarterGhosts(),visual,true, delay);
@@ -124,14 +143,17 @@ public class Executor
 		exec.runGameTimedSpeedOptimised(new RandomPacMan(),new RandomGhosts(),fixedTime,visual);
 		 */
 
-		/*
+		
 		//run game in asynchronous mode and record it to file for replay at a later stage.
-		boolean visual=true;
+/*		boolean visual=true;
 		String fileName="replay.txt";
 		exec.runGameTimedRecorded(new HumanController(new KeyBoardInput()),new RandomGhosts(),visual,fileName);
 		//exec.replayGame(fileName,visual);
 		 */
+		} catch (IOException | ClassNotFoundException e) {e.printStackTrace();}
 	}
+
+	private int bestScore;
 
 	/**
 	 * For running multiple games without visuals. This is useful to get a good idea of how well a controller plays
@@ -143,10 +165,15 @@ public class Executor
 	 * @param ghostController The Ghosts controller
 	 * @param trials The number of trials to be executed
 	 */
-	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials, boolean visual)
+	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials, boolean visual, boolean doReplay)
 	{
 		double avgScore=0;
-
+		StringBuilder replay=new StringBuilder();
+		String fileName = pacManController.getClass().getName();
+		int currBestScore = 0;
+		if(bestScores.get(fileName) != null)
+			currBestScore = bestScores.get(fileName);
+		
 		Random rnd=new Random(0);
 		Game game;
 		GameView gv=null;
@@ -168,12 +195,21 @@ public class Executor
 
 				if(visual)
 					gv.repaint();
+				
+				if(doReplay)
+					replay.append(game.getGameState()+"\n");
 			}
 			avgScore+=game.getScore();
 			System.out.print(game.getScore()+" <> ");
+			
+			if(game.getScore()>currBestScore){
+				saveToFile(replay.toString(),fileName,false);
+				bestScores.put(fileName, game.getScore());
+			}
 		}
-
-		System.out.println("\n"+avgScore/trials);
+		double _mean = avgScore/trials;
+		System.out.println("\n"+_mean);
+		bestScores.put(fileName+"MEAN", (int) _mean);
 	}
 	public double runExperimentGene(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials)
 	{

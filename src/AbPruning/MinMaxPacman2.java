@@ -1,16 +1,12 @@
 package AbPruning;
 import java.util.EnumMap;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
-import pacman.Evaluation_;
+import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.RandomGhosts;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
-import pacman.game.GameView;
-
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to
@@ -59,9 +55,9 @@ public class MinMaxPacman2 extends Controller<MOVE>
 	private State minimax(State node, boolean isMax) {
 		if(node.depth == depth || node.game.getActivePillsIndices().length == 0){
 			if(isMax)
-				node.alpha = Evaluation_.evaluateGameState(node.game);
+				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 
-				node.beta = Evaluation_.evaluateGameState(node.game);
+				node.beta = EvaluationHeuristic.evaluateGameState(node.game);
 			return node;
 		}
 
