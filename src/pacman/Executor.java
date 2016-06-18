@@ -72,16 +72,22 @@ public class Executor
 			bestScores = (HashMap<String, Integer>) ois.readObject(); 
 		}else{
 			bestScores = new HashMap<String, Integer>();
-		}		
+		}
+		/* Tests Running */
 		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),500,true,true); 
 //		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new MyRandomPacMan(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new Greedy(),new RandomGhosts(),10,true);
 		
+		/* Save Scores */	
 		FileOutputStream fout = new FileOutputStream("Scores.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fout);
 		oos.writeObject(bestScores);
+		
+		/* Replay Best */
+		exec.replayGame("AbPruning.MinMaxPacman",visual);
+		
 		
 		
 		//exec.runGameTurn(new StarterPacMan(),new StarterGhosts(),visual,true, delay);
