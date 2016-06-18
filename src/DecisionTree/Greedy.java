@@ -15,10 +15,10 @@ import pacman.game.Game;
  */
 public class Greedy extends Controller<MOVE>
 {
-	static private int DEPTH = 5;
+	static private int DEPTH = 7;
 	EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
 
-	public int dfsSearch(Node node, int life){
+	public long dfsSearch(Node node, int life){
 		Game gameState = node.getPredecessor().getGameState().copy();
 		if (!isValidMove(gameState.getPossibleMoves(gameState.getPacmanCurrentNodeIndex()), node.getMove()))
 			return Integer.MIN_VALUE;
@@ -30,9 +30,9 @@ public class Greedy extends Controller<MOVE>
 		if (neighbors == null || node.getGameState().gameOver())// || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			return EvaluationHeuristic.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
-		int bestValue = Integer.MIN_VALUE;
+		long bestValue = Integer.MIN_VALUE;
 		for (Node neighbor : neighbors) {		
-			int value = dfsSearch(neighbor,life);
+			long value = dfsSearch(neighbor,life);
 			if (value > bestValue)
 				bestValue = value;
 		}
@@ -58,10 +58,10 @@ public class Greedy extends Controller<MOVE>
 		tree.getHeadNode().setGameState(game);
 		ArrayList<Node> neighbors = tree.getHeadNode().getNeighbors();
 		
-		int leftValue = dfsSearch(neighbors.get(0),game.getPacmanNumberOfLivesRemaining());
-		int rightValue = dfsSearch(neighbors.get(1),game.getPacmanNumberOfLivesRemaining());
-		int upValue = dfsSearch(neighbors.get(2),game.getPacmanNumberOfLivesRemaining());
-		int downValue = dfsSearch(neighbors.get(3),game.getPacmanNumberOfLivesRemaining());
+		long leftValue = dfsSearch(neighbors.get(0),game.getPacmanNumberOfLivesRemaining());
+		long rightValue = dfsSearch(neighbors.get(1),game.getPacmanNumberOfLivesRemaining());
+		long upValue = dfsSearch(neighbors.get(2),game.getPacmanNumberOfLivesRemaining());
+		long downValue = dfsSearch(neighbors.get(3),game.getPacmanNumberOfLivesRemaining());
 		
 		return EvaluationHeuristic.getBestMove(leftValue, rightValue, upValue, downValue);
 	}
