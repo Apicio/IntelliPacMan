@@ -52,7 +52,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 	private State minimax(State node, boolean isMax) {
-		if(node.depth == depth || node.game.getActivePillsIndices().length == 0){
+		if(node.depth == depth ){
 			if(isMax)
 				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 
@@ -86,7 +86,7 @@ public class MinMaxPacman extends Controller<MOVE>
 				}
 				return node;
 			}else{
-				double res = 0;
+				long res = 0;
 				for(State child : next){
 					child.alpha = node.alpha;
 					child.beta = node.beta;
@@ -156,6 +156,7 @@ public class MinMaxPacman extends Controller<MOVE>
 		else
 			moves = gameState.game.getPossibleMoves(currIndex);
 		ArrayList<State> toReturn = new ArrayList<State>();
+        
 		EnumMap<GHOST, MOVE> ghostMove = ghostController.getMove(gameState.game,-1);
 		for(MOVE move : moves){
 			Game tmpGame = gameState.game.copy();
@@ -166,7 +167,8 @@ public class MinMaxPacman extends Controller<MOVE>
 				c.pacMove = move;
 			else
 				c.pacMove = gameState.pacMove;
-			toReturn.add(c);
+			if(!gameState.game.wasPacManEaten()) //controlliamo se sono figlio di un nodo in cui sono morto
+			   toReturn.add(c);
 		}
 		return toReturn;
 	}
@@ -175,7 +177,7 @@ public class MinMaxPacman extends Controller<MOVE>
 		public Integer depth = 0;
 		public Game game;
 		public MOVE pacMove = MOVE.NEUTRAL;;
-		public double alpha = Integer.MIN_VALUE;
-		public double beta = Integer.MAX_VALUE;
+		public long alpha = Long.MIN_VALUE;
+		public long beta = Long.MAX_VALUE;
 	}
 }

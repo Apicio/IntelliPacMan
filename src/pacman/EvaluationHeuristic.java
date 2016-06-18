@@ -15,7 +15,7 @@ public class EvaluationHeuristic {
 	public  static final int MIN_GHOST_DIST = 10;
 	public static final int CROWDED_DISTANCE=30;
 	
-	public static int evaluateGameState(Game game) {
+	public static long evaluateGameState(Game game) {
 		Node node = new Node();
 		node.setGameState(game);
 		return evaluateGameState(node, false); 
@@ -23,12 +23,12 @@ public class EvaluationHeuristic {
 	
 	public static Game initGame;
 
-	public static int evaluateGameState(Node node, boolean IsCollided) {
+	public static long evaluateGameState(Node node, boolean IsCollided) {
 		Game g = node.getGameState();
 		int pacIdx = g.getPacmanCurrentNodeIndex();
 		int shortestGhostDist = Integer.MAX_VALUE; int secondShortestGhostDist = Integer.MAX_VALUE;
 		int ghostDist=0;
-		int toReturn;
+		long toReturn;
 
 		/*Calcolo distanza minima dai ghost*/		
 		int tmp = 0;
@@ -59,11 +59,24 @@ public class EvaluationHeuristic {
 //		int[] pillIndices = new int[activePillIndices.length+activePowerPillIndices.length];	
 //		System.arraycopy(activePillIndices, 0, pillIndices, 0, activePillIndices.length);
 //		System.arraycopy(activePowerPillIndices, 0, pillIndices, activePillIndices.length-1, activePowerPillIndices.length);
+		
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
-
 		toReturn =  50*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+	/*	
+		if(50*g.getScore()<0)
+			System.out.println("Ovf 1");
+		if(ghostDist<0)
+			System.out.println("Ovf 2");
+		if(temp<0){
+			System.out.println("Ovf 3");
+		    System.out.println("n_live: "+node.getGameState().getPacmanNumberOfLivesRemaining());
+		}
+		if(shortestPillDistance<0)
+			System.out.println("Ovf 4");
+		*/
 		if(toReturn<0)
-			System.out.println("Ovf");
+			System.out.println("Ovf ALL");
+		
 		return toReturn;
 	}
 	
