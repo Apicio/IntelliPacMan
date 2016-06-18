@@ -15,7 +15,7 @@ import pacman.game.Game;
  * fill in the getAction() method. Any additional classes you write should either
  * be placed in this package or sub-packages (e.g., game.entries.pacman.mypackage).
  */
-public class DFSTree extends Controller<MOVE>
+public class Greedy extends Controller<MOVE>
 {
 	static private int DEPTH = 5;
 	EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
@@ -27,11 +27,9 @@ public class DFSTree extends Controller<MOVE>
 		
 		gameState.advanceGame(node.getMove(), ghostMoves);
 		node.setGameState(gameState);
-		
-		
+			
 		ArrayList<Node> neighbors = node.getNeighbors();
-		if (neighbors == null || node.getGameState().gameOver() || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
-			//return Evaluation.evaluateGameState(node, node.getGameState().getPacmanNumberOfLivesRemaining() < life); // end of branch return heuristic
+		if (neighbors == null || node.getGameState().gameOver())// || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			return Evaluation_.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
 		int bestValue = Integer.MIN_VALUE;

@@ -126,9 +126,6 @@ public class MinMaxPacman extends Controller<MOVE>
 						tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
 						State c = new State();
 						c.game = tmpGame;
-						c.alpha = gameState.alpha;
-						c.beta = gameState.beta;
-						c.depth = gameState.depth+1;
 						c.pacMove = gameState.pacMove;
 						toReturn.add(c);
 					}
@@ -145,9 +142,6 @@ public class MinMaxPacman extends Controller<MOVE>
 		tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
 		State c = new State();
 		c.game = tmpGame;
-		c.alpha = gameState.alpha;
-		c.beta = gameState.beta;
-		c.depth = gameState.depth+1;
 		c.pacMove = gameState.pacMove;
 		toReturn.add(c);
 		return toReturn;
@@ -172,9 +166,6 @@ public class MinMaxPacman extends Controller<MOVE>
 				c.pacMove = move;
 			else
 				c.pacMove = gameState.pacMove;
-			c.alpha = gameState.alpha;
-			c.beta = gameState.beta;
-			c.depth = gameState.depth+1;
 			toReturn.add(c);
 		}
 		return toReturn;

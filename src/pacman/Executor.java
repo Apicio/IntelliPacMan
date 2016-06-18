@@ -11,7 +11,7 @@ import java.util.EnumMap;
 import java.util.Random;
 import AbPruning.MinMaxPacman;
 import AbPruning.MinMaxPacman2;
-import DecisionTree.DFSTree;
+import DecisionTree.Greedy;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
@@ -28,8 +28,6 @@ import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.pacman.Ambush;
-import pacman.entries.pacman.ComputeDistance;
-import pacman.entries.pacman.MyPacMan;
 import pacman.entries.pacman.MyRandomPacMan;
 import pacman.entries.pacman.MyRandomPacMan2;
 import pacman.entries.pacman.MyAStar;
@@ -60,6 +58,13 @@ public class Executor
 	public static void main(String[] args)
 	{
 
+//		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),10,true); 
+		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
+//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
+//		exec.runExperiment(new MyRandomPacMan(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
+//		exec.runExperiment(new DFSTree(),new AggressiveGhosts(),10,true);
+		
+		
 		//exec.runGameTurn(new StarterPacMan(),new StarterGhosts(),visual,true, delay);
 
 		//run multiple games in batch mode - good for testing.
@@ -69,8 +74,7 @@ public class Executor
 		//			exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),i,!canReverse),new AggressiveGhosts(),numTrials); 
 		//			System.out.println("DEEP = "+i);
 		//		}
-		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),10,true); 
-
+ 
 		//		int numTrials=10;
 		//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),numTrials); 
 		// 
