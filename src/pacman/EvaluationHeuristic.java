@@ -73,10 +73,10 @@ public class EvaluationHeuristic {
 		}
 		if(shortestPillDistance<0)
 			System.out.println("Ovf 4");
-		*/
+		
 		if(toReturn<0)
 			System.out.println("Ovf ALL");
-		
+		*/
 		return toReturn;
 	}
 	

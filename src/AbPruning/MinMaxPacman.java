@@ -52,7 +52,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 	private State minimax(State node, boolean isMax) {
-		if(node.depth == depth ){
+		if(node.depth == depth||node.game.getActivePillsIndices().length == 0 ){
 			if(isMax)
 				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 
