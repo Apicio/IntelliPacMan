@@ -12,10 +12,10 @@ import pacman.game.Game;
 
 public class EvaluationHeuristic {
 
-	public  static final int MIN_GHOST_DIST = 10;
+	public  static final int MIN_GHOST_DIST = 20;
 	public static final int CROWDED_DISTANCE=30;
 	
-	public static long evaluateGameState(Game game) {
+	public static int evaluateGameState(Game game) {
 		Node node = new Node();
 		node.setGameState(game);
 		return evaluateGameState(node, false); 
@@ -23,12 +23,12 @@ public class EvaluationHeuristic {
 	
 	public static Game initGame;
 
-	public static long evaluateGameState(Node node, boolean IsCollided) {
+	public static int evaluateGameState(Node node, boolean IsCollided) {
 		Game g = node.getGameState();
 		int pacIdx = g.getPacmanCurrentNodeIndex();
 		int shortestGhostDist = Integer.MAX_VALUE; int secondShortestGhostDist = Integer.MAX_VALUE;
 		int ghostDist=0;
-		long toReturn;
+		int toReturn;
 
 		/*Calcolo distanza minima dai ghost*/		
 		int tmp = 0;
@@ -58,14 +58,30 @@ public class EvaluationHeuristic {
 		
 		/*Se Ms Pacman ha perso tutte le vite tranne una, allora preferiamo i percorsi che non ci protano a GameOver*/
 		int c1=0;
-		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() ==0)
+		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() == 1)
 			c1 = 100000000; 
-		toReturn =  50*g.getScore()+c1  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+	
+		toReturn =  50*g.getScore() +c1  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
 		
 		/*Se Ms Pacman è stata mangiata umiliamo il percorso!*/
-		if(g.wasPacManEaten())
-			toReturn=-1;
+	/*	if(g.wasPacManEaten())
+			toReturn=-1;*/
 		return toReturn;
+	}
+	
+	public static int computeJunctionDistance(Game game, int pacIdx){
+		int tmp = 0; int shortest = Integer.MAX_VALUE;
+		int[] jIdxs = game.getJunctionIndices();
+		for(GHOST g : GHOST.values()){
+			if(ArrayUtils.contains(jIdxs,game.getGhostCurrentNodeIndex(g))){
+				tmp = (int)game.getDistance(pacIdx, game.getGhostCurrentNodeIndex(g), DM.PATH);
+				if(tmp<shortest)
+					shortest = tmp;
+			}
+		}
+		return shortest;
+			
+		
 	}
 	
     private static boolean isCrowded(Game game)
@@ -80,10 +96,10 @@ public class EvaluationHeuristic {
         return (distance/6)<CROWDED_DISTANCE ? true : false;
     }
 
-	public static MOVE getBestMove(long leftValue, long rightValue, long upValue, long downValue) {
+	public static MOVE getBestMove(int leftValue, int rightValue, int upValue, int downValue) {
 
 		MOVE bestMove = MOVE.NEUTRAL;
-		long bestValue = Integer.MIN_VALUE;
+		int bestValue = Integer.MIN_VALUE;
 		if (leftValue != Integer.MIN_VALUE && leftValue > bestValue) {
 			bestMove = MOVE.LEFT;
 			bestValue = leftValue;

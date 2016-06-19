@@ -15,10 +15,11 @@ import pacman.game.Game;
  */
 public class Greedy extends Controller<MOVE>
 {
-	static private int DEPTH = 7;
+	static private int DEPTH = 100000;
 	EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
-
-	public long dfsSearch(Node node, int life){
+	
+	
+	public int dfsSearch(Node node, int life){
 		Game gameState = node.getPredecessor().getGameState().copy();
 		if (!isValidMove(gameState.getPossibleMoves(gameState.getPacmanCurrentNodeIndex()), node.getMove()))
 			return Integer.MIN_VALUE;
@@ -27,12 +28,12 @@ public class Greedy extends Controller<MOVE>
 		node.setGameState(gameState);
 			
 		ArrayList<Node> neighbors = node.getNeighbors();
-		if (neighbors == null || node.getGameState().gameOver())// || node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
+		if (neighbors == null || node.getGameState().gameOver()|| node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			return EvaluationHeuristic.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
-		long bestValue = Integer.MIN_VALUE;
+		int bestValue = Integer.MIN_VALUE;
 		for (Node neighbor : neighbors) {		
-			long value = dfsSearch(neighbor,life);
+			int value = dfsSearch(neighbor,life);
 			if (value > bestValue)
 				bestValue = value;
 		}
@@ -53,15 +54,14 @@ public class Greedy extends Controller<MOVE>
 		this.ghostMoves.put(GHOST.INKY, game.getGhostLastMoveMade(GHOST.INKY));
 		this.ghostMoves.put(GHOST.PINKY, game.getGhostLastMoveMade(GHOST.PINKY));
 		this.ghostMoves.put(GHOST.SUE, game.getGhostLastMoveMade(GHOST.SUE));
-
 		Tree tree = new Tree(DEPTH);
 		tree.getHeadNode().setGameState(game);
 		ArrayList<Node> neighbors = tree.getHeadNode().getNeighbors();
 		
-		long leftValue = dfsSearch(neighbors.get(0),game.getPacmanNumberOfLivesRemaining());
-		long rightValue = dfsSearch(neighbors.get(1),game.getPacmanNumberOfLivesRemaining());
-		long upValue = dfsSearch(neighbors.get(2),game.getPacmanNumberOfLivesRemaining());
-		long downValue = dfsSearch(neighbors.get(3),game.getPacmanNumberOfLivesRemaining());
+		int leftValue = dfsSearch(neighbors.get(0),game.getPacmanNumberOfLivesRemaining());
+		int rightValue = dfsSearch(neighbors.get(1),game.getPacmanNumberOfLivesRemaining());
+		int upValue = dfsSearch(neighbors.get(2),game.getPacmanNumberOfLivesRemaining());
+		int downValue = dfsSearch(neighbors.get(3),game.getPacmanNumberOfLivesRemaining());
 		
 		return EvaluationHeuristic.getBestMove(leftValue, rightValue, upValue, downValue);
 	}

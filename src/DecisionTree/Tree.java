@@ -20,7 +20,7 @@ public class Tree {
 	
 	public Tree(int depth) {
 		headNode = new Node();
-		
+	//	ArrayList<Node> neighbors = new ArrayList<Node>(4);
 		ArrayList<Node> currentDepthNodes = new ArrayList<Node>();
 		ArrayList<Node> nextDepthNodes = new ArrayList<Node>();
 		currentDepthNodes.add(headNode);
@@ -42,16 +42,19 @@ public class Tree {
 				nextDepthNodes.add(up);
 				nextDepthNodes.add(down);
 				
+			//	neighbors.clear();
 				ArrayList<Node> neighbors = new ArrayList<Node>(4);
 				neighbors.add(left);
 				neighbors.add(right);
 				neighbors.add(up);
 				neighbors.add(down);
 				node.setNeighbors(neighbors);
+			
 			}
 			
 			currentDepthNodes = nextDepthNodes;
-			nextDepthNodes = new ArrayList<Node>();
+			nextDepthNodes.clear();
+			//nextDepthNodes = new ArrayList<Node>();
 		}
 	}
 	
