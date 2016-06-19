@@ -22,7 +22,6 @@ import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
 import pacman.controllers.KeyBoardInput;
 import pacman.controllers.examples.AggressiveGhosts;
-import pacman.controllers.examples.DijkstraPacMan;
 import pacman.controllers.examples.Legacy;
 import pacman.controllers.examples.Legacy2TheReckoning;
 import pacman.controllers.examples.NearestPillPacMan;
@@ -74,8 +73,8 @@ public class Executor
 			bestScores = new HashMap<String, Integer>();
 		}
 		/* Tests Running */
-		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),500,true,true); 
-//		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
+//		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),500,true,true); 
+		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true,true);
 //		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new MyRandomPacMan(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
 //		exec.runExperiment(new Greedy(),new RandomGhosts(),10,true);
@@ -173,12 +172,9 @@ public class Executor
 	 */
 	public void runExperiment(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,int trials, boolean visual, boolean doReplay)
 	{
-		double avgScore=0;
-		StringBuilder replay=new StringBuilder();
+		double avgScore=0;	
 		String fileName = pacManController.getClass().getName();
-		int currBestScore = 0;
-		if(bestScores.get(fileName) != null)
-			currBestScore = bestScores.get(fileName);
+		
 		
 		Random rnd=new Random(0);
 		Game game;
@@ -186,6 +182,10 @@ public class Executor
 		System.out.print("<> ");
 		for(int i=0;i<trials;i++)
 		{
+			StringBuilder replay=new StringBuilder();
+			int currBestScore = 0;
+			if(bestScores.get(fileName) != null)
+				currBestScore = bestScores.get(fileName);
 			game=new Game(rnd.nextLong());
 			
 			if(visual)

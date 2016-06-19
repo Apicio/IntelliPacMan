@@ -3,7 +3,8 @@ package pacman.entries.pacman;
 import java.util.ArrayList;
 
 import java.util.EnumMap;
-import pacman.Evaluation_;
+
+import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -75,10 +76,12 @@ public class MyAStar extends Controller<MOVE>
 			for(int o=1; o<fullPath.length; o++){
 				fullMovePath[o-1] = game.getMoveToMakeToReachDirectNeighbour(fullPath[o-1], fullPath[o]);
 				gameState.advanceGame(fullMovePath[o-1], controllerGhosts.getMove());
-				if(o == 1)
-					c.next = fullMovePath[o-1];	
+				if(gameState.wasPacManEaten())
+					break;
+				c.next = o==1? fullMovePath[0] : c.next;
 			}
-			c.heuristic = Evaluation_.evaluateGameState(gameState);
+				
+			c.heuristic = gameState.wasPacManEaten()? -1 : EvaluationHeuristic.evaluateGameState(gameState);
 			c.game = gameState;
 			moves.add(c);
 		}
@@ -105,7 +108,7 @@ public class MyAStar extends Controller<MOVE>
 
 	private class Container{
 		public MOVE next = MOVE.NEUTRAL;
-		public Integer heuristic = Integer.MIN_VALUE;
+		public Long heuristic = Long.MIN_VALUE;
 		public Game game;
 	}
 }
