@@ -53,32 +53,18 @@ public class EvaluationHeuristic {
 			ghostDist = MIN_GHOST_DIST*10000;
 		
 		/*Preferiamo la mossa che ci porta verso la pallina (energetica o non) più vicina*/
-//		int[] activePillIndices = g.getActivePillsIndices();
-//		int[] activePowerPillIndices = g.getActivePowerPillsIndices();
 		int[] pillIndices = ArrayUtils.addAll(g.getActivePillsIndices(), g.getActivePowerPillsIndices());	
-//		int[] pillIndices = new int[activePillIndices.length+activePowerPillIndices.length];	
-//		System.arraycopy(activePillIndices, 0, pillIndices, 0, activePillIndices.length);
-//		System.arraycopy(activePowerPillIndices, 0, pillIndices, activePillIndices.length-1, activePowerPillIndices.length);
-		
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
-		toReturn =  50*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+		
+		/*Se Ms Pacman ha perso tutte le vite tranne una, allora preferiamo i percorsi che non ci protano a GameOver*/
+		int c1=0;
+		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() ==0)
+			c1 = 100000000; 
+		toReturn =  50*g.getScore()+c1  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+		
+		/*Se Ms Pacman è stata mangiata umiliamo il percorso!*/
 		if(g.wasPacManEaten())
 			toReturn=-1;
-		/*	
-		if(50*g.getScore()<0)
-			System.out.println("Ovf 1");
-		if(ghostDist<0)
-			System.out.println("Ovf 2");
-		if(temp<0){
-			System.out.println("Ovf 3");
-		    System.out.println("n_live: "+node.getGameState().getPacmanNumberOfLivesRemaining());
-		}
-		if(shortestPillDistance<0)
-			System.out.println("Ovf 4");
-		
-		if(toReturn<0)
-			System.out.println("Ovf ALL");
-		*/
 		return toReturn;
 	}
 	
