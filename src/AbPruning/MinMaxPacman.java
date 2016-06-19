@@ -53,11 +53,11 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 	private State minimax(State node, boolean isMax) {
-		if(node.depth == depth || node.game.getActivePillsIndices().length == 0 || node.game.wasPacManEaten()){
+		if(node.depth == depth || node.game.getActivePillsIndices().length == 0 || node.game.getPacmanNumberOfLivesRemaining()<=0){
 			if(isMax)
-				node.alpha = node.game.wasPacManEaten()? node.depth : EvaluationHeuristic.evaluateGameState(node.game);
+				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 
-				node.beta = node.game.wasPacManEaten()? node.depth : EvaluationHeuristic.evaluateGameState(node.game);
+				node.beta = EvaluationHeuristic.evaluateGameState(node.game);
 			return node;
 		}
 

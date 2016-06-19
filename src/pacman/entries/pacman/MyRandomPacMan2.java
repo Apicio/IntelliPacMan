@@ -1,6 +1,17 @@
 package pacman.entries.pacman;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
@@ -18,14 +29,16 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 {
 	private Controller<EnumMap<GHOST,MOVE>> controllerGhosts; 
 	private int[] iIndex;
+	private boolean firstTime = true;
+
 
 	public MyRandomPacMan2 (Controller<EnumMap<GHOST,MOVE>> ghosts){
 		this.controllerGhosts = ghosts;
 	}
 
-	public MOVE computeMove(Game game, boolean isAll){
+	public MOVE computeMove(Game game, long timeDue, boolean isAll){
 		int[] index = isAll? iIndex : game.getActivePillsIndices();
-		ArrayList<Container> moves = new ArrayList<Container>();
+		ArrayList<Container> moves = new ArrayList<Container>();			
 
 		for(int i=0; i<index.length; i++){
 			int k = 0;
@@ -52,7 +65,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 				best = move;
 
 		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && !isAll)
-			return computeMove(game, true);
+			return computeMove(game, timeDue, true);
 		else
 			return best.next;
 	}
@@ -61,13 +74,17 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 
 	public MOVE getMove(Game game, long timeDue) 
 	{
-		iIndex = game.getPillIndices();
-		return computeMove(game, false);
+		if(firstTime){
+			iIndex = game.getActivePillsIndices();;
+			firstTime = false;
+		}
+
+		return computeMove(game, timeDue,false);
 	}
 
 	private class Container{
 		public MOVE next = MOVE.NEUTRAL;
-		public long heuristic = Long.MIN_VALUE;
+		public Integer heuristic = Integer.MIN_VALUE;
 		public Game game;
 	}
 }
