@@ -1,11 +1,10 @@
 package pacman.entries.pacman;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.Random;
-import pacman.Evaluation_;
+
+import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
@@ -92,7 +91,7 @@ public class MyRandomPacMan extends Controller<MOVE>
 					c.next = path;	
 				k++;
 			}
-			c.heuristic = Evaluation_.evaluateGameState(gameState);
+			c.heuristic = EvaluationHeuristic.evaluateGameState(gameState);
 			c.game = gameState;
 			moves.add(c);
 			localMoves.add(c);
@@ -153,7 +152,7 @@ public class MyRandomPacMan extends Controller<MOVE>
 
 	private class Container{
 		public MOVE next = MOVE.NEUTRAL;
-		public Integer heuristic = Integer.MIN_VALUE;
+		public long heuristic = Long.MIN_VALUE;
 		public Game game;
 	}
 }
