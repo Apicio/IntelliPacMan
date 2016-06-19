@@ -56,12 +56,7 @@ public class EvaluationHeuristic {
 		int[] pillIndices = ArrayUtils.addAll(g.getActivePillsIndices(), g.getActivePowerPillsIndices());	
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 		
-		/*Se Ms Pacman ha perso tutte le vite tranne una, allora preferiamo i percorsi che non ci protano a GameOver*/
-		int c1=0;
-		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() == 1)
-			c1 = 100000000; 
-	
-		toReturn =  50*g.getScore() +c1  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
+		toReturn =  50*g.getScore()   + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
 		
 		/*Se Ms Pacman è stata mangiata umiliamo il percorso!*/
 	/*	if(g.wasPacManEaten())
