@@ -64,7 +64,17 @@ public class EvaluationHeuristic {
 		
 	}
 	
-   public static boolean isCrowded(Game game)
+	private static boolean isCrowded(Game game){
+      GHOST[] ghosts=GHOST.values();
+        float distance=0;
+        
+        for (int i=0;i<ghosts.length-1;i++)
+            for(int j=i+1;j<ghosts.length;j++)
+                distance+=game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghosts[i]),game.getGhostCurrentNodeIndex(ghosts[j]));
+        
+        return (distance/6)<CROWDED_DISTANCE ? true : false;
+    }
+	
 	public static int computeJunctionDistance(Game game, int pacIdx){
 		int tmp = 0; int shortest = Integer.MAX_VALUE;
 		int[] jIdxs = game.getJunctionIndices();
@@ -75,9 +85,7 @@ public class EvaluationHeuristic {
 					shortest = tmp;
 			}
 		}
-		return shortest;
-			
-		
+		return shortest;	
 	}
 
 	public static MOVE getBestMove(int leftValue, int rightValue, int upValue, int downValue) {
