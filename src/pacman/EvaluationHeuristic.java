@@ -62,7 +62,9 @@ public class EvaluationHeuristic {
 		
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 		toReturn =  50*g.getScore()  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
-	/*	
+		if(g.wasPacManEaten())
+			toReturn=-1;
+		/*	
 		if(50*g.getScore()<0)
 			System.out.println("Ovf 1");
 		if(ghostDist<0)
