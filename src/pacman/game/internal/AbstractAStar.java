@@ -59,7 +59,7 @@ public abstract class AbstractAStar
 
 			if (currentNode.isEqual(target))
 				break;
-
+			Collections.shuffle(currentNode.adj);
 			for(E next : currentNode.adj)
 			{
 				if(next.move!=currentNode.reached.opposite())
@@ -68,7 +68,7 @@ public abstract class AbstractAStar
 
 					if (!open.contains(next.node) && !closed.contains(next.node))
 					{
-						next.node.g = currentDistance + currentNode.g + computeCost(game, next.node.index, target.index)+addictionalCost(next.node.index, game);
+						next.node.g = currentDistance + currentNode.g + computeCost(game, next.node.index, target.index)+addictionalCost(next.node.index, game, currentDistance);
 						next.node.h = computeHeuristic(game, next.node.index, target.index);
 						
 						next.node.parent = currentNode;
@@ -99,7 +99,7 @@ public abstract class AbstractAStar
 		return extractPath(target);
 	}
 
-	public abstract double addictionalCost(int index, Game game);
+	public abstract double addictionalCost(int index, Game game, double currentDistance);
 	public abstract double computeCost(Game game, int index, int index2);
 	public abstract double computeHeuristic(Game game, int index, int index2);
 

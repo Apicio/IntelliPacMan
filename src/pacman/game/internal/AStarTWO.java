@@ -32,7 +32,7 @@ public class AStarTWO extends AbstractAStar
 	}
 
 	@Override
-	public double addictionalCost(int index, Game game) {
+	public double addictionalCost(int index, Game game, double dist) {
 		double cost = 0;
 		if(!game.isJunction(index))
 			return cost;

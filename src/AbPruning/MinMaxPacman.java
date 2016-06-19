@@ -168,7 +168,7 @@ public class MinMaxPacman extends Controller<MOVE>
 				c.pacMove = move;
 			else
 				c.pacMove = gameState.pacMove;
-			   toReturn.add(c);
+			toReturn.add(c);
 		}
 		return toReturn;
 	}

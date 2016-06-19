@@ -198,9 +198,11 @@ package pacman.game.internal;
 //}
 
 import pacman.game.Game;
+import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
-public class AStar extends AbstractAStar{
+public class MyAStarHeuristic extends AbstractAStar{
+	public  static final int MIN_GHOST_DIST = 10;
 
 	@Override
 	public double computeHeuristic(Game game, int start, int target) {
@@ -211,16 +213,46 @@ public class AStar extends AbstractAStar{
 	public double computeCost(Game game, int index, int index2) {
 		return 0;
 	}
+	
 	public MOVE getMoveTo(int target, Game game){
 		int currPac = game.getPacmanCurrentNodeIndex();
 		int [] path = computePathsAStar(currPac, target, game.getPacmanLastMoveMade(), game);
 		return game.getMoveToMakeToReachDirectNeighbour(currPac, path[1]);
-		
+
 	}
 
 	@Override
 	public double addictionalCost(int index, Game game, double dist) {
-		return 0;
+		int cost = 1000000;
+		int shortestGhostDist = Integer.MAX_VALUE; int secondShortestGhostDist = Integer.MAX_VALUE;
+		/*Calcolo distanza minima dai ghost*/		
+		int tmp = 0;int ghostDist=0;
+		if(index == game.getGhostCurrentNodeIndex(GHOST.BLINKY) && !game.isGhostEdible(GHOST.BLINKY))
+			return cost+6000000-dist;
+		if(index == game.getGhostCurrentNodeIndex(GHOST.INKY) && !game.isGhostEdible(GHOST.INKY))
+			return cost+6000000-dist;
+		if(index == game.getGhostCurrentNodeIndex(GHOST.PINKY) && !game.isGhostEdible(GHOST.PINKY))
+			return cost+6000000-dist;
+		if(index == game.getGhostCurrentNodeIndex(GHOST.SUE) && !game.isGhostEdible(GHOST.SUE))
+			return cost+6000000-dist;
+		for(GHOST ghost : GHOST.values()){
+			int ghostIdx = game.getGhostCurrentNodeIndex(ghost);
+			if(!game.isGhostEdible(ghost)){
+				tmp = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(),ghostIdx);
+				if(shortestGhostDist>tmp){
+					secondShortestGhostDist = shortestGhostDist;
+					shortestGhostDist = tmp;
+				}
+			}
+		}
+		/* Se abbiamo una distanza più corta ed una seconda distanza più corta, facciamo la media */	
+		if(shortestGhostDist != Integer.MAX_VALUE && shortestGhostDist !=-1 && shortestGhostDist<MIN_GHOST_DIST )
+			if(secondShortestGhostDist != Integer.MAX_VALUE && secondShortestGhostDist !=-1 && secondShortestGhostDist<MIN_GHOST_DIST ) 
+				ghostDist =   ((shortestGhostDist+secondShortestGhostDist)/2)*10000;
+			else  //Altrimenti ci mettiamo alla distanza più corta
+				ghostDist = shortestGhostDist*10000;
+		else //Se non abbiamo nessuna delle due distanze allora ci mettiamo ad una distanza minima
+			ghostDist = MIN_GHOST_DIST*10000;	
+		return cost-ghostDist-dist;
 	}
-	
 }

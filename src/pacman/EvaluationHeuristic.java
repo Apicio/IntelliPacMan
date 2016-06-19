@@ -58,7 +58,7 @@ public class EvaluationHeuristic {
 		
 		/*Se Ms Pacman ha perso tutte le vite tranne una, allora preferiamo i percorsi che non ci protano a GameOver*/
 		int c1=0;
-		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() ==0)
+		if(!g.gameOver() && g.getPacmanNumberOfLivesRemaining() ==1)
 			c1 = 100000000; 
 		toReturn =  50*g.getScore()+c1  + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);
 		
@@ -66,9 +66,10 @@ public class EvaluationHeuristic {
 		if(g.wasPacManEaten())
 			toReturn=-1;
 		return toReturn;
+		
 	}
 	
-    private static boolean isCrowded(Game game)
+   public static boolean isCrowded(Game game)
     {
     	GHOST[] ghosts=GHOST.values();
         float distance=0;

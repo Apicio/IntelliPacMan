@@ -1,5 +1,6 @@
 package pacman.game;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.Random;
@@ -815,6 +816,9 @@ public final class Game
 		return currentMaze.graph[nodeIndex].x;
 	}
 	
+	public boolean isLvLup(){
+			return currentLevelTime == 0;	
+	}
 	/**
 	 * Returns the y coordinate of the specified node.
 	 *
@@ -1122,7 +1126,24 @@ public final class Game
 		for(int i=0;i<currentMaze.pillIndices.length;i++)
 			if(pills.get(i))
 				indices[index++]=currentMaze.pillIndices[i];		
-			
+		indices = Arrays.copyOf(indices, index);		
+		return indices;
+	}
+	/**
+	 * returns the indices of all not active pills in the mazes[gs.curMaze]
+	 *
+	 * @return the active pills indices
+	 */
+	public int[] getNotActivePillsIndices()
+	{
+		int[] indices=new int[pills.cardinality()];
+		
+		int index=0;
+		
+		for(int i=0;i<currentMaze.pillIndices.length;i++)
+			if(!pills.get(i))
+				indices[index++]=currentMaze.pillIndices[i];		
+		indices = Arrays.copyOf(indices, index);		
 		return indices;
 	}
 	
@@ -1140,7 +1161,7 @@ public final class Game
 		for(int i=0;i<currentMaze.powerPillIndices.length;i++)
 			if(powerPills.get(i))
 				indices[index++]=currentMaze.powerPillIndices[i];		
-			
+		indices = Arrays.copyOf(indices, index);	
 		return indices;
 	}
 

@@ -23,7 +23,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 		this.controllerGhosts = ghosts;
 	}
 
-	public MOVE computeMove(Game game, long timeDue, boolean isAll){
+	public MOVE computeMove(Game game, boolean isAll){
 		int[] index = isAll? iIndex : game.getActivePillsIndices();
 		ArrayList<Container> moves = new ArrayList<Container>();
 
@@ -52,7 +52,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 				best = move;
 
 		if(best.game.getPacmanNumberOfLivesRemaining() < game.getPacmanNumberOfLivesRemaining() && !isAll)
-			return computeMove(game, timeDue, true);
+			return computeMove(game, true);
 		else
 			return best.next;
 	}
@@ -62,7 +62,7 @@ public class MyRandomPacMan2 extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		iIndex = game.getPillIndices();
-		return computeMove(game, timeDue,false);
+		return computeMove(game, false);
 	}
 
 	private class Container{
