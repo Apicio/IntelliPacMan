@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -37,6 +39,7 @@ import pacman.entries.pacman.MyRandomPacMan2;
 import pacman.entries.pacman.MyAStar;
 import pacman.game.Game;
 import pacman.game.GameView;
+import pacman.game.Constants.MOVE;
 
 import static pacman.game.Constants.*;
 
@@ -72,12 +75,17 @@ public class Executor
 		}else{
 			bestScores = new HashMap<String, Integer>();
 		}
+		Controller<MOVE> pacmanController;
+		Controller<EnumMap<GHOST,MOVE>> ghostController;
+		pacmanController = new MyAStar(new AggressiveGhosts());
+//		pacmanController = new MyRandomPacMan(new AggressiveGhosts());
+//		pacmanController = new Greedy();
+//		pacmanController = new MinMaxPacman(new AggressiveGhosts(),120,false);
+		ghostController = new AggressiveGhosts();
+		
+		
 		/* Tests Running */
-//		exec.runExperiment(new MinMaxPacman(new AggressiveGhosts(),120,false),new AggressiveGhosts(),500,true,true); 
-		exec.runExperiment(new MyAStar(new AggressiveGhosts()),new AggressiveGhosts(),10,true,true);
-//		exec.runExperiment(new MyRandomPacMan2(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
-//		exec.runExperiment(new MyRandomPacMan(new AggressiveGhosts()),new AggressiveGhosts(),10,true);
-//		exec.runExperiment(new Greedy(),new RandomGhosts(),10,true);
+//		exec.runExperiment(pacmanController,ghostController,10,true,true);
 		
 		/* Save Scores */	
 		FileOutputStream fout = new FileOutputStream("Scores.ser");
@@ -85,7 +93,7 @@ public class Executor
 		oos.writeObject(bestScores);
 		
 		/* Replay Best */
-		exec.replayGame("AbPruning.MinMaxPacman",visual);
+		exec.replayGame(pacmanController.getClass().getName(),visual);
 		
 		
 		
@@ -212,6 +220,7 @@ public class Executor
 				saveToFile(replay.toString(),fileName,false);
 				bestScores.put(fileName, game.getScore());
 			}
+			System.out.println("BestScore:" +bestScores.get(fileName));
 		}
 		double _mean = avgScore/trials;
 		System.out.println("\n"+_mean);
@@ -488,6 +497,11 @@ public class Executor
 	 */
 	public void replayGame(String fileName,boolean visual)
 	{
+		PrintStream orig = System.err;
+		System.setErr(new PrintStream(new OutputStream() {
+		    @Override public void write(int b) throws IOException {}
+		}));
+		
 		ArrayList<String> timeSteps=loadReplay(fileName);
 
 		Game game=new Game(0);
@@ -503,7 +517,7 @@ public class Executor
 
 			try
 			{
-				Thread.sleep(DELAY);
+				Thread.sleep(2);
 			}
 			catch(InterruptedException e)
 			{
@@ -512,6 +526,7 @@ public class Executor
 			if(visual)
 				gv.repaint();
 		}
+		System.setErr(orig);
 	}
 
 	//save file for replays

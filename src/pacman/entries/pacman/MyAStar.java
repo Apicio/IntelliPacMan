@@ -76,12 +76,10 @@ public class MyAStar extends Controller<MOVE>
 			for(int o=1; o<fullPath.length; o++){
 				fullMovePath[o-1] = game.getMoveToMakeToReachDirectNeighbour(fullPath[o-1], fullPath[o]);
 				gameState.advanceGame(fullMovePath[o-1], controllerGhosts.getMove());
-				if(gameState.wasPacManEaten())
-					break;
 				c.next = o==1? fullMovePath[0] : c.next;
 			}
 				
-			c.heuristic = gameState.wasPacManEaten()? -1 : EvaluationHeuristic.evaluateGameState(gameState);
+			c.heuristic = EvaluationHeuristic.evaluateGameState(gameState);
 			c.game = gameState;
 			moves.add(c);
 		}
