@@ -85,7 +85,7 @@ public class Executor
 		
 		
 		/* Tests Running */
-		exec.runExperiment(pacmanController,ghostController,100,true,true);		
+		exec.runExperiment(pacmanController,ghostController,5,true,true);		
 		/* Save Scores */	
 		FileOutputStream fout = new FileOutputStream("Scores.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fout);

@@ -7,7 +7,6 @@ import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
-import pacman.game.internal.MyAStarHeuristic;
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to
@@ -17,8 +16,9 @@ import pacman.game.internal.MyAStarHeuristic;
 public class MyAStar extends Controller<MOVE>
 {
 	private Controller<EnumMap<GHOST,MOVE>> controllerGhosts; 
-	private MyAStarHeuristic a = new MyAStarHeuristic();;
+	private MyAStarHeuristic a;
 	private int[] iIndex;
+	private int[] active;
 	private ArrayList<Container> moves = new ArrayList<Container>();;
 
 	public MyAStar (Controller<EnumMap<GHOST,MOVE>> ghosts){
@@ -26,17 +26,20 @@ public class MyAStar extends Controller<MOVE>
 	}
 
 	public MOVE computeMOVE(Game game, boolean isAll){
-		int[] index = isAll? iIndex : game.getActivePillsIndices();
+		int[] index = isAll? iIndex : active;
+		int currPacManIndex = game.getPacmanCurrentNodeIndex();
+		MOVE lastMoveMade = game.getPacmanLastMoveMade();
 
 		for(int i=0; i<index.length; i++){
 			int gotoPill = index[i];
 			Game gameState = game.copy();
 			Container c = new Container();
 			int[] fullPath;
+			
 			if(isAll)
-				fullPath = a.computePathsAStar(gameState.getPacmanCurrentNodeIndex(), gotoPill, gameState);
+				fullPath = a.computePathsAStar(currPacManIndex, gotoPill, gameState);
 			else
-				fullPath = a.computePathsAStar(gameState.getPacmanCurrentNodeIndex(), gotoPill, gameState.getPacmanLastMoveMade(), gameState);
+				fullPath = a.computePathsAStar(currPacManIndex, gotoPill, lastMoveMade, gameState);
 			MOVE[] fullMovePath = new MOVE[fullPath.length-1];
 			for(int o=1; o<fullPath.length; o++){
 				fullMovePath[o-1] = game.getMoveToMakeToReachDirectNeighbour(fullPath[o-1], fullPath[o]);
@@ -68,6 +71,9 @@ public class MyAStar extends Controller<MOVE>
 			iIndex = game.getPillIndices();		
 			System.out.println("LvL UP!!");
 		}
+		active = game.getActivePillsIndices();
+		a = new MyAStarHeuristic(game);
+		game.seLiarIndex();
 		a.createGraph(game.getCurrentMaze().graph);
 		moves.clear();
 		return computeMOVE(game, false);

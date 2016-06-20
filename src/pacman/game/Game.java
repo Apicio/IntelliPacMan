@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.Random;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Map.Entry;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.MOVE;
@@ -814,6 +817,26 @@ public final class Game
 	public int getNodeXCood(int nodeIndex)
 	{
 		return currentMaze.graph[nodeIndex].x;
+	}
+	
+	private static int[] index = new int[0];
+	public void seLiarIndex(){
+		if(isLvLup())
+			index = new int[0];
+		if(index.length == 0)
+			for(GHOST g : GHOST.values())
+				if(ghosts.get(g).lairTime <= 0){
+					index = getNeighbouringNodes(ghosts.get(g).currentNodeIndex);
+					ArrayUtils.add(index, ghosts.get(g).currentNodeIndex);
+					break;
+				}
+	}
+	public boolean isLiarIndex(int i){
+		if(index.length !=0)
+		for(GHOST g : GHOST.values())
+			if(ghosts.get(g).lairTime > 0)
+				return ArrayUtils.contains(index, i);
+		return false;
 	}
 	
 	public boolean isLvLup(){
