@@ -19,6 +19,8 @@ import java.util.Random;
 import AbPruning.MinMaxPacman;
 import AbPruning.MinMaxPacman2;
 import DecisionTree.Greedy;
+import Deep.MyAStar;
+import Deep.MyRandomPacMan2;
 import pacman.controllers.Controller;
 import pacman.controllers.HumanAggressiveGhosts;
 import pacman.controllers.HumanController;
@@ -34,9 +36,6 @@ import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.pacman.Ambush;
-import pacman.entries.pacman.MyRandomPacMan;
-import pacman.entries.pacman.MyRandomPacMan2;
-import pacman.entries.pacman.MyAStar;
 import pacman.game.Game;
 import pacman.game.GameView;
 import pacman.game.Constants.MOVE;
@@ -78,7 +77,7 @@ public class Executor
 		Controller<MOVE> pacmanController;
 		Controller<EnumMap<GHOST,MOVE>> ghostController;
 		ghostController = new RandomGhosts();
-		pacmanController = new MyRandomPacMan2(ghostController);
+		pacmanController = new MyAStar(ghostController);
 //		pacmanController = new MyRandomPacMan(new AggressiveGhosts());
 //		pacmanController = new Greedy();
 //		pacmanController = new MinMaxPacman(new AggressiveGhosts(),120,false);
@@ -93,7 +92,7 @@ public class Executor
 		oos.writeObject(bestScores);
 		
 		/* Replay Best */
-		exec.replayGame(pacmanController.getClass().getName(),visual);
+		exec.replayGame("pacman.entries.pacman.MyRandomPacMan2pacman.controllers.examples.RandomGhosts",visual);
 		
 		
 		
