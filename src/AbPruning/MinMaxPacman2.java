@@ -165,7 +165,7 @@ public class MinMaxPacman2 extends Controller<MOVE>
 			moves = gameState.game.getPossibleMoves(currIndex);
 		shuffleArray(moves);
 		State[] toReturn = new State[moves.length];
-		EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);	
+		EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE> (GHOST.class);	
 		int l = 0;
 		for(MOVE move : moves){
 			Game tmpGame = gameState.game.copy();

@@ -34,8 +34,7 @@ public class MyAStar extends Controller<MOVE>
 			int gotoPill = index[i];
 			Game gameState = game.copy();
 			Container c = new Container();
-			int[] fullPath;
-			
+			int[] fullPath;			
 			if(isAll)
 				fullPath = a.computePathsAStar(currPacManIndex, gotoPill, gameState);
 			else

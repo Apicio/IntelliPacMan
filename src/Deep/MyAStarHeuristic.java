@@ -284,7 +284,7 @@ public class MyAStarHeuristic extends AbstractAStar{
 		for(GHOST ghost : GHOST.values()){
 			int ghostIdx = game.getGhostCurrentNodeIndex(ghost);
 			if(!game.isGhostEdible(ghost)){
-				tmp = game.getShortestPathDistance(index,ghostIdx);
+				tmp = computeDistancePath(index,ghostIdx); 
 				if(shortestGhostDist>tmp){
 					secondShortestGhostDist = shortestGhostDist;
 					shortestGhostDist = tmp;
@@ -301,6 +301,18 @@ public class MyAStarHeuristic extends AbstractAStar{
 		else //Se non abbiamo nessuna delle due distanze allora ci mettiamo ad una distanza minima
 			ghostDist = MIN_GHOST_DIST*10000;	
 		return cost-ghostDist-dist;
+	}
+
+	private int computeDistancePath(int index, int ghostIdx) {
+		int dist = game.getShortestPathDistance(index,ghostIdx);
+		int[] i = game.getLiarIndex();
+		if(dist == -1 && i.length !=0){
+			dist = 0;		
+			for(int ii : i)
+				dist = dist + game.getShortestPathDistance(index,ii);
+			dist = dist/i.length;
+		}
+		return dist;
 	}
 
 //	private boolean isNear(int index, int[] ghost) {

@@ -34,6 +34,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		//System.out.println(game.getPacmanNumberOfLivesRemaining());
+		game.seLiarIndex();
 		State head = new State();
 		head.game = game;
 		head.depth = 0;
@@ -53,7 +54,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	}
 
 	private State minimax(State node, boolean isMax) {
-		if(node.depth == depth || node.game.getActivePillsIndices().length == 0 || node.game.getPacmanNumberOfLivesRemaining()<=0){
+		if(node.depth == depth || (node.game.getActivePillsIndices().length + node.game.getActivePowerPillsIndices().length) == 0 || node.game.getPacmanNumberOfLivesRemaining()<=0){
 			if(isMax)
 				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
 			else 

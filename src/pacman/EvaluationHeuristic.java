@@ -35,7 +35,8 @@ public class EvaluationHeuristic {
 		for(GHOST ghost : GHOST.values()){
 			int ghostIdx = g.getGhostCurrentNodeIndex(ghost);
 			if(!g.isGhostEdible(ghost)){
-				tmp = g.getShortestPathDistance(pacIdx,ghostIdx);
+				//tmp = g.getShortestPathDistance(pacIdx,ghostIdx);
+				tmp = computeDistancePath(pacIdx,ghostIdx,g);
 				if(shortestGhostDist>tmp){
 					secondShortestGhostDist = shortestGhostDist;
 					shortestGhostDist = tmp;
@@ -56,12 +57,24 @@ public class EvaluationHeuristic {
 		int[] pillIndices = ArrayUtils.addAll(g.getActivePillsIndices(), g.getActivePowerPillsIndices());	
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 		
-		toReturn =  50*g.getScore()   + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);	
+		toReturn =  50*g.getScore() + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);	
 		/*Se Ms Pacman è stata mangiata umiliamo il percorso!*/
 	/*	if(g.wasPacManEaten())
 			toReturn=-1;*/
 		return toReturn;
 		
+	}
+	
+	private static int computeDistancePath(int index, int ghostIdx, Game game) {
+		int dist = game.getShortestPathDistance(index,ghostIdx);
+		int[] i = game.getLiarIndex();
+		if(dist == -1 && i.length !=0){
+			dist = 0;		
+			for(int ii : i)
+				dist = dist + game.getShortestPathDistance(index,ii);
+			dist = dist/i.length;
+		}
+		return dist;
 	}
 	
 	private static boolean isCrowded(Game game){

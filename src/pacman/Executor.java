@@ -64,6 +64,7 @@ public class Executor
 
 	public static void main(String[] args)
 	{
+		
 		try {
 		/* Load Best Scores*/
 		File f = new File("Scores.ser");
@@ -76,11 +77,11 @@ public class Executor
 		}
 		Controller<MOVE> pacmanController;
 		Controller<EnumMap<GHOST,MOVE>> ghostController;
-		ghostController = new RandomGhosts();
-		pacmanController = new MyAStar(ghostController);
+		ghostController = new AggressiveGhosts();
+//		pacmanController = new MyAStar(ghostController);
 //		pacmanController = new MyRandomPacMan(new AggressiveGhosts());
 //		pacmanController = new Greedy();
-//		pacmanController = new MinMaxPacman(new AggressiveGhosts(),120,false);
+		pacmanController = new MinMaxPacman(new AggressiveGhosts(),120,false);
 		
 		
 		
@@ -92,7 +93,7 @@ public class Executor
 		oos.writeObject(bestScores);
 		
 		/* Replay Best */
-		exec.replayGame("pacman.entries.pacman.MyRandomPacMan2pacman.controllers.examples.RandomGhosts",visual);
+		exec.replayGame(pacmanController.getClass().getName()+""+ghostController.getClass().getName(),visual);
 		
 		
 		

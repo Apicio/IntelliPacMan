@@ -845,6 +845,10 @@ public final class Game
 					return ArrayUtils.contains(index, i);
 		return false;
 	}
+	public int[] getLiarIndex(){
+		return index;
+	}
+	
 	/**
 	 * Level up trigger
 	 * @return
