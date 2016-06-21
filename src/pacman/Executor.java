@@ -86,7 +86,7 @@ public class Executor
 		
 		
 		/* Tests Running */
-		exec.runExperiment(pacmanController,ghostController,5,true,true);		
+		exec.runExperiment(pacmanController,ghostController,100,true,true);		
 		/* Save Scores */	
 		FileOutputStream fout = new FileOutputStream("Scores.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -189,6 +189,7 @@ public class Executor
 		System.out.print("<> ");
 		for(int i=0;i<trials;i++)
 		{
+			System.out.print("ex: "+i+"-");
 			StringBuilder replay=new StringBuilder();
 			int currBestScore = 0;
 			if(bestScores.get(fileName) != null)

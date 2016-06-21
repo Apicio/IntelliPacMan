@@ -23,6 +23,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	private int depth;
 	Controller<EnumMap<GHOST,MOVE>> ghostController;
 	private boolean canReverse;
+	private Game game;
 
 
 	public MinMaxPacman(Controller<EnumMap<GHOST,MOVE>> ghostController, int depth, boolean canReverse){
@@ -34,6 +35,7 @@ public class MinMaxPacman extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		//System.out.println(game.getPacmanNumberOfLivesRemaining());
+		this.game = game;
 		game.seLiarIndex();
 		State head = new State();
 		head.game = game;
@@ -56,11 +58,15 @@ public class MinMaxPacman extends Controller<MOVE>
 	private State minimax(State node, boolean isMax) {
 		if(node.depth == depth || (node.game.getActivePillsIndices().length + node.game.getActivePowerPillsIndices().length) == 0 || node.game.getPacmanNumberOfLivesRemaining()<=0){
 			if(isMax)
-				node.alpha = EvaluationHeuristic.evaluateGameState(node.game);
+				node.alpha = EvaluationHeuristic.evaluateGameStateIncremental(node.game, this.game);
 			else 
-				node.beta = EvaluationHeuristic.evaluateGameState(node.game);
+				node.beta = EvaluationHeuristic.evaluateGameStateIncremental(node.game, this.game);
 			return node;
 		}
+		
+		if(node.game.wasPowerPillEaten() && !EvaluationHeuristic.isCrowded(node.game) && !(ghostController instanceof RandomGhosts))
+				node.game.setScore(node.game.getScore()-50);
+
 
 		if(isMax){
 			ArrayList<State> next = getNextPACMANMoves(node);
@@ -158,7 +164,7 @@ public class MinMaxPacman extends Controller<MOVE>
 		else
 			moves = gameState.game.getPossibleMoves(currIndex);
 		ArrayList<State> toReturn = new ArrayList<State>();
-        
+
 		EnumMap<GHOST, MOVE> ghostMove = ghostController.getMove(gameState.game,-1);
 		for(MOVE move : moves){
 			Game tmpGame = gameState.game.copy();

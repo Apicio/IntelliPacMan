@@ -857,6 +857,12 @@ public final class Game
 		return currentLevelTime == 0;	
 	}
 	/**
+	 * Set Score
+	 */
+	public void setScore(int score){
+		this.score = score;
+	}
+	/**
 	 * Returns the y coordinate of the specified node.
 	 *
 	 * @param nodeIndex The node index

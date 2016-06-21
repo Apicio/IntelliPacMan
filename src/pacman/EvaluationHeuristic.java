@@ -15,15 +15,21 @@ public class EvaluationHeuristic {
 	public  static final int MIN_GHOST_DIST = 20;
 	public static final int CROWDED_DISTANCE=30;
 	
+	public static int evaluateGameStateIncremental(Game game, Game orig) {
+		Node node = new Node();
+		node.setGameState(game);
+		return evaluateGameState(node)-orig.getScore()*100; 
+	}
+	
 	public static int evaluateGameState(Game game) {
 		Node node = new Node();
 		node.setGameState(game);
-		return evaluateGameState(node, false); 
+		return evaluateGameState(node); 
 	}
 	
 	public static Game initGame;
 
-	public static int evaluateGameState(Node node, boolean IsCollided) {
+	public static int evaluateGameState(Node node) {
 		Game g = node.getGameState();
 		int pacIdx = g.getPacmanCurrentNodeIndex();
 		int shortestGhostDist = Integer.MAX_VALUE; int secondShortestGhostDist = Integer.MAX_VALUE;
@@ -36,7 +42,7 @@ public class EvaluationHeuristic {
 			int ghostIdx = g.getGhostCurrentNodeIndex(ghost);
 			if(!g.isGhostEdible(ghost)){
 				//tmp = g.getShortestPathDistance(pacIdx,ghostIdx);
-				tmp = computeDistancePath(pacIdx,ghostIdx,g);
+				tmp = computeDistancePath(pacIdx,ghostIdx,g); /* AGGIUNTO QUESTO*/
 				if(shortestGhostDist>tmp){
 					secondShortestGhostDist = shortestGhostDist;
 					shortestGhostDist = tmp;
@@ -57,7 +63,7 @@ public class EvaluationHeuristic {
 		int[] pillIndices = ArrayUtils.addAll(g.getActivePillsIndices(), g.getActivePowerPillsIndices());	
 		int shortestPillDistance =  g.getShortestPathDistance(pacIdx,g.getClosestNodeIndexFromNodeIndex(pacIdx, pillIndices, DM.PATH));
 		
-		toReturn =  50*g.getScore() + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);	
+		toReturn =  100*g.getScore() + ghostDist + node.getGameState().getPacmanNumberOfLivesRemaining()*100000000 + (200 - shortestPillDistance);	
 		/*Se Ms Pacman è stata mangiata umiliamo il percorso!*/
 	/*	if(g.wasPacManEaten())
 			toReturn=-1;*/
@@ -77,15 +83,18 @@ public class EvaluationHeuristic {
 		return dist;
 	}
 	
-	private static boolean isCrowded(Game game){
+	public static boolean isCrowded(Game game){
       GHOST[] ghosts=GHOST.values();
-        float distance=0;
+      float distance=0;
         
         for (int i=0;i<ghosts.length-1;i++)
             for(int j=i+1;j<ghosts.length;j++)
                 distance+=game.getShortestPathDistance(game.getGhostCurrentNodeIndex(ghosts[i]),game.getGhostCurrentNodeIndex(ghosts[j]));
+        float pacDistance = 0;
+        for(GHOST g : GHOST.values())
+        	pacDistance+=game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(),game.getGhostCurrentNodeIndex(g));
         
-        return (distance/6)<CROWDED_DISTANCE ? true : false;
+        return (pacDistance/4)<CROWDED_DISTANCE && (distance/6)<CROWDED_DISTANCE ? true : false;
     }
 	
 	public static int computeJunctionDistance(Game game, int pacIdx){
