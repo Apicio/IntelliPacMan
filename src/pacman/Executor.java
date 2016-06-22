@@ -77,16 +77,16 @@ public class Executor
 		}
 		Controller<MOVE> pacmanController;
 		Controller<EnumMap<GHOST,MOVE>> ghostController;
-		ghostController = new AggressiveGhosts();
+		ghostController = new RandomGhosts();
 //		pacmanController = new MyAStar(ghostController);
 //		pacmanController = new MyRandomPacMan(new AggressiveGhosts());
 //		pacmanController = new Greedy();
-		pacmanController = new MinMaxPacman(new AggressiveGhosts(),120,false);
-		
-		
-		
-		/* Tests Running */
-		exec.runExperiment(pacmanController,ghostController,100,true,true);		
+		pacmanController = new MinMaxPacman(ghostController,10,false);
+//		
+//		
+//		
+//		/* Tests Running */
+		exec.runExperiment(pacmanController,ghostController,50,true,true);		
 		/* Save Scores */	
 		FileOutputStream fout = new FileOutputStream("Scores.ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fout);

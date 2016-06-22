@@ -13,7 +13,7 @@ import pacman.game.Game;
 public class EvaluationHeuristic {
 
 	public  static final int MIN_GHOST_DIST = 20;
-	public static final int CROWDED_DISTANCE=30;
+	public static final int CROWDED_DISTANCE = 30;
 	
 	public static int evaluateGameStateIncremental(Game game, Game orig) {
 		Node node = new Node();

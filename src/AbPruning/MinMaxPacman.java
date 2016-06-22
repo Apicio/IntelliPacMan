@@ -3,6 +3,9 @@ package AbPruning;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import pacman.EvaluationHeuristic;
 import pacman.controllers.Controller;
 import pacman.controllers.examples.RandomGhosts;
@@ -63,9 +66,9 @@ public class MinMaxPacman extends Controller<MOVE>
 				node.beta = EvaluationHeuristic.evaluateGameStateIncremental(node.game, this.game);
 			return node;
 		}
-		
-		if(node.game.wasPowerPillEaten() && !EvaluationHeuristic.isCrowded(node.game) && !(ghostController instanceof RandomGhosts))
-				node.game.setScore(node.game.getScore()-50);
+
+		if(node.game.wasPowerPillEaten() && !(ghostController instanceof RandomGhosts) && !EvaluationHeuristic.isCrowded(node.game) )
+			node.game.setScore(node.game.getScore()-50);
 
 
 		if(isMax){
@@ -101,7 +104,7 @@ public class MinMaxPacman extends Controller<MOVE>
 					child.depth = node.depth+1;	
 					res += minimax(child,true).alpha;
 				}
-				node.beta = res/next.size();
+				node.beta = next.size() != 0? res/next.size() : 0;
 				return node;
 			}
 		}
@@ -117,20 +120,28 @@ public class MinMaxPacman extends Controller<MOVE>
 	private ArrayList<State> getMINRandomMoves(State gameState) {
 		ArrayList<State> toReturn = new ArrayList<State>();
 		ArrayList<MOVE[]> moves = new ArrayList<MOVE[]>();
-		for(GHOST ghost : GHOST.values()){
-			int ghostIndex = gameState.game.getGhostCurrentNodeIndex(ghost);
-			moves.add(gameState.game.getPossibleMoves(ghostIndex));
-		}		
-		for(int i = 0; i<moves.get(0).length; i++){
-			for(int j = 0; j<moves.get(1).length; j++){
-				for(int k = 0; k<moves.get(2).length; k++){
-					for(int x = 0; x<moves.get(3).length; x++){
+		for(GHOST ghost : GHOST.values())
+			if(game.doesGhostRequireAction(ghost)){
+				int ghostIndex = gameState.game.getGhostCurrentNodeIndex(ghost);
+				moves.add(gameState.game.getPossibleMoves(ghostIndex));
+			}else{
+				moves.add(new MOVE[0]);
+			}
+
+		for(int i = 0; i<moves.get(0).length || i == 0; i++){
+			for(int j = 0; j<moves.get(1).length || j == 0; j++){
+				for(int k = 0; k<moves.get(2).length || k == 0; k++){
+					for(int x = 0; x<moves.get(3).length || x == 0; x++){
 						Game tmpGame = gameState.game.copy();
 						EnumMap<GHOST, MOVE> ghostStruct = ghostController.getMove(gameState.game,-1);
-						ghostStruct.replace(GHOST.values()[0], moves.get(0)[i]);
-						ghostStruct.replace(GHOST.values()[1], moves.get(1)[j]);
-						ghostStruct.replace(GHOST.values()[2], moves.get(2)[k]);
-						ghostStruct.replace(GHOST.values()[3], moves.get(3)[x]);
+						if(moves.get(0).length !=0)
+							ghostStruct.replace(GHOST.values()[0], moves.get(0)[i]);
+						if(moves.get(1).length !=0)
+							ghostStruct.replace(GHOST.values()[1], moves.get(1)[j]);
+						if(moves.get(2).length !=0)
+							ghostStruct.replace(GHOST.values()[2], moves.get(2)[k]);
+						if(moves.get(3).length !=0)
+							ghostStruct.replace(GHOST.values()[3], moves.get(3)[x]);
 						tmpGame.advanceGame(MOVE.NEUTRAL, ghostStruct);
 						State c = new State();
 						c.game = tmpGame;
