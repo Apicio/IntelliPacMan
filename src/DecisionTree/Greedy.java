@@ -19,10 +19,10 @@ import pacman.game.Game;
  */
 public class Greedy extends Controller<MOVE>
 {
-	static private int DEPTH = 1;
+	static private int DEPTH = 9;
 	EnumMap<GHOST, MOVE> ghostMoves = new EnumMap<GHOST, MOVE>(GHOST.class);
 	static private LinkedList<Integer> values;
-	Tree tree;
+	private Tree tree;
 	public Greedy(){
 		tree = new Tree(DEPTH);
 		values = new LinkedList<Integer>();
@@ -39,7 +39,7 @@ public class Greedy extends Controller<MOVE>
 			
 		ArrayList<Node> neighbors = node.getNeighbors();
 
-		if (neighbors.size() == 0 || node.getGameState().gameOver()|| node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
+		if (neighbors == null || node.getGameState().gameOver()|| node.getGameState().getPacmanNumberOfLivesRemaining() < life) 
 			return EvaluationHeuristic.evaluateGameState(node.getGameState()); // end of branch return heuristic
 
 		int bestValue = Integer.MIN_VALUE;

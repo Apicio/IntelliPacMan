@@ -52,9 +52,8 @@ public class Tree {
 			
 			}
 			
-			currentDepthNodes = (ArrayList<Node>) nextDepthNodes.clone();
-			nextDepthNodes.clear();
-			//nextDepthNodes = new ArrayList<Node>();
+			currentDepthNodes =  nextDepthNodes;
+			nextDepthNodes = new ArrayList<Node>();
 		}
 	}
 	
